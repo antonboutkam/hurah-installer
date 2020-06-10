@@ -5,7 +5,7 @@
 	"license": "MIT",
 	"autoload": {
 		"psr-4": {
-			"HI\\": "src/classes"
+			"Hi\\Installer\\": "src/classes/Installer"
 		}
 	},
 	"extra": {
