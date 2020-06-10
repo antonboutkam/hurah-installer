@@ -1,0 +1,22 @@
+{
+	"name": "hurah/hurah-installer",
+	"description" : "Installer scripts for Hurah!",
+	"type": "composer-plugin",
+	"license": "MIT",
+	"autoload": {
+		"psr-4": {
+			"HI\\Installer": "src/classes/Installer"
+		}
+	},
+	"extra": {
+		"class": [
+			"HI\\Installer\\ComposerPluginLoader"
+		]
+	},
+	"require": {
+		"composer-plugin-api": "^1.0"
+	},
+	"require-dev": {
+		"composer/composer": "^1.3"
+	}
+}
