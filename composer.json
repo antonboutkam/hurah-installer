@@ -12,6 +12,9 @@
 			"Hi\\": "src/Hi"
 		}
 	},
+	"extra": {
+		"class": "HI\\Plugin"
+	},
 	"require-dev": {
 		"composer/composer": "^1.3",
 		"phpunit/phpunit": "^6.0",
