@@ -19,7 +19,7 @@ class ComposerPluginLoader implements PluginInterface
         $oApiInstaller = new Domain\Installer($io, $composer);
         $oInstallationManager->addInstaller($oApiInstaller);
 
-        $oApiInstaller = new System\Installer($io, $composer);
+        $oApiInstaller = new Core\Installer($io, $composer);
         $oInstallationManager->addInstaller($oApiInstaller);
     }
 }
