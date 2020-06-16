@@ -5,16 +5,18 @@ use Composer\Installer\InstallerInterface;
 use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
 use Hi\Installer\AbstractInstaller;
+use Hi\Installer\Util;
 
 class Installer extends AbstractInstaller implements InstallerInterface
 {
+
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
         symlink($this->getInstallPath($package), $this->getVirtualInstallPath($package));
     }
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
-        $this->removeSymlink($this->getVirtualInstallPath($package));
+        Util::removeSymlink($this->getVirtualInstallPath($package));
     }
     private function getVirtualInstallPath(PackageInterface $package):string
     {

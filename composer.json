@@ -3,8 +3,10 @@
 	"description" : "Installer scripts for Hurah!",
 	"type": "composer-plugin",
 	"license": "MIT",
-	"minimum-stability": "alpha",
+	"minimum-stability": "dev",
+	"stability": "dev",
 	"require": {
+		"vlucas/phpdotenv": "4.1",
 		"composer-plugin-api": "^1.0"
 	},
 	"autoload": {
@@ -13,7 +15,7 @@
 		}
 	},
 	"extra": {
-		"class": "HI\\Plugin"
+		"class": "Hi\\Plugin"
 	},
 	"require-dev": {
 		"composer/composer": "^1.3",
