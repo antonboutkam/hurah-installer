@@ -36,7 +36,7 @@ class Db
         }
         else
         {
-            $io->write("Could not establish a database connection with the provided params.");
+            $io->write("Could not establish a database connection.");
             $io->write("Assuming the user still needs to be created.");
         }
 
@@ -62,8 +62,8 @@ class Db
             $aRootLogin = self::askRootLogin($aConnectProps, $io);
         }
 
-        self::createDatabaseWithRootLoginIfNotExists($aRootLogin);
-        self::createUserIfNotExists($aRootLogin);
+        self::createDatabaseWithRootLoginIfNotExists($aRootLogin, $io);
+        self::createUserIfNotExists($aRootLogin, $io);
 
         return true;
     }
