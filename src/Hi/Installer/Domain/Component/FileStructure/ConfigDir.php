@@ -28,8 +28,18 @@ final class ConfigDir
             return;
         }
 
-        $io->write('Creating symlink ' . $sConfigFileLocation, $sConfigDir . '/config.php');
-        symlink($sConfigFileLocation, $sConfigDir . '/config.php');
+        $sConfigDest = $sConfigDir . '/config.php';
+        if(!file_exists($sConfigDest))
+        {
+            $io->write('Creating symlink ' . $sConfigFileLocation, $sConfigDir . '/config.php');
+            symlink($sConfigFileLocation, $sConfigDest);
+        }
+        else
+        {
+            $io->write('Config file was already symlinked, skipping');
+
+        }
+
     }
     static function remove(string $sDomainConfigFolder, string $sOriginalInstallPath, IOInterface $io):void
     {

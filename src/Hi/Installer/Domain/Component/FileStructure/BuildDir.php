@@ -6,7 +6,7 @@ use Hi\Installer\Util;
 
 final class BuildDir
 {
-    static function     create(string $sDomainConfigFolder, string $sOriginalInstallPath, IOInterface $io):void
+    static function create(string $sDomainConfigFolder, string $sOriginalInstallPath, IOInterface $io):void
     {
         $sBuildDir = './system/build';
         if(!is_dir($sBuildDir))

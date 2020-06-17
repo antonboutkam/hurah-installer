@@ -16,14 +16,13 @@ class Installer extends AbstractInstaller implements InstallerInterface
         parent::install($repo, $package);
 
         $oDotenv = Dotenv::createImmutable($this->getInstallPath($package));
-        $oDotenv->required(['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS']);
         $oDotenv->load();
-
+/*
         $oFileStructure = new FileStructure();
         $oFileStructure->install($_SERVER['SYSTEM_ID'], $this->getInstallPath($package), $this->io);
-
+*/
         $oDatabase = new Database();
-        $oDatabase->install($_SERVER['SYSTEM_ID']);
+        $oDatabase->install($_SERVER, $this->getInstallPath($package), $this->io);
 
     }
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
