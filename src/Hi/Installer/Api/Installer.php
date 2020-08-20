@@ -11,6 +11,7 @@ final class Installer extends AbstractInstaller implements InstallerInterface
 {
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
+        parent::install($repo, $package);
         $this->io->write("Symlinking " . $this->getInstallPath($package) . ' => '. $this->getVirtualInstallPath($package));
         symlink($this->getInstallPath($package), $this->getVirtualInstallPath($package));
     }
