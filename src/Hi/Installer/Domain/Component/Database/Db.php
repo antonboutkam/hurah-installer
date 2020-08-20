@@ -2,11 +2,12 @@
 namespace Hi\Installer\Domain\Component\Database;
 
 use Composer\IO\IOInterface;
+use Hi\Exceptions\InstallationException;
 use mysqli;
 
 class Db
 {
-    static function create(array $aConnectProps, IOInterface $io):bool
+    function create(array $aConnectProps, IOInterface $io):bool
     {
         // 1. Connect with normal params.
         //   1.1 Check if signing in with normal params is possible.
@@ -24,11 +25,16 @@ class Db
         //    3.2 CREATE DATABASE
         //    3.2 CREATE USER
 
-        if(self::canConnectWithNormalParams($aConnectProps))
+        if($this->envVariablesMissing($aConnectProps))
+        {
+            throw new InstallationException("Cannot create or initialize DB, environment variables missing. " . json_encode($aConnectProps));
+        }
+
+        if($this->canConnectWithNormalParams($aConnectProps))
         {
             $io->write("Connected to database.");
             $io->write("Now checking if the database {$aConnectProps['DB_NAME']} exists.");
-            if(self::databaseExists($aConnectProps))
+            if($this->databaseExists($aConnectProps))
             {
                 $io->write("Database exists, setting up is already done.");
                 return true;
@@ -36,62 +42,67 @@ class Db
         }
         else
         {
-            $io->write("Could not establish a database connection with the provided params.");
+            $io->write("Could not establish a database connection.");
             $io->write("Assuming the user still needs to be created.");
         }
 
-        if(self::canConnectWithNormalParams($aConnectProps)
-            && !self::databaseExists($aConnectProps)
-            && !self::envFileContainsRootLogin($aConnectProps))
+        if($this->canConnectWithNormalParams($aConnectProps)
+            && !$this->databaseExists($aConnectProps)
+            && !$this->envFileContainsRootLogin($aConnectProps))
         {
-            $bDatabaseCreated = self::tryCreateDb($aConnectProps, $io);
+            $bDatabaseCreated = $this->tryCreateDb($aConnectProps, $io);
 
             if($bDatabaseCreated)
             {
-                self::giveUserPermissions($aConnectProps, $io);
+                $this->giveUserPermissions($aConnectProps, $io);
                 return true;
             }
         }
 
-        if(self::envFileContainsRootLogin($aConnectProps))
+        if($this->envFileContainsRootLogin($aConnectProps))
         {
             $aRootLogin = $aConnectProps;
         }
         else
         {
-            $aRootLogin = self::askRootLogin($aConnectProps, $io);
+            $aRootLogin = $this->askRootLogin($aConnectProps, $io);
         }
 
-        self::createDatabaseWithRootLoginIfNotExists($aRootLogin);
-        self::createUserIfNotExists($aRootLogin);
+
+        $this->createDatabaseWithRootLoginIfNotExists($aRootLogin, $io);
+        $this->createUserIfNotExists($aRootLogin, $io);
 
         return true;
     }
-    static function createUserIfNotExists(array $aProps, IOInterface $io):bool
+    function envVariablesMissing($aProps)
+    {
+        return !isset($aProps['DB_SERVER']) || !isset($aProps['DB_USER']) || !isset($aProps['DB_PASS']);
+    }
+    function createUserIfNotExists(array $aProps, IOInterface $io):bool
     {
         $io->write("Creating mysql user");
         $oMysqlI = new mysqli($aProps['DB_SERVER'], $aProps['ROOT_DB_USER'], $aProps['ROOT_DB_PASS']);
-        self::grandAll($oMysqlI, $aProps, $io);
+        $this->grandAll($oMysqlI, $aProps, $io);
         return true;
     }
-    static function createDatabaseWithRootLoginIfNotExists(array $aProps, IOInterface $io):bool
+    function createDatabaseWithRootLoginIfNotExists(array $aProps, IOInterface $io):bool
     {
         $oMysqlI = new mysqli($aProps['DB_SERVER'], $aProps['ROOT_DB_USER'], $aProps['ROOT_DB_PASS']);
-        return self::createDbQuery($oMysqlI, $aProps['DB_NAME'], $io);
+        return $this->createDbQuery($oMysqlI, $aProps['DB_NAME'], $io);
     }
-    private static function giveUserPermissions(array $aProps, IOInterface $io)
+    public function giveUserPermissions(array $aProps, IOInterface $io)
     {
         $oMysqlI = new mysqli($aProps['DB_SERVER'], $aProps['DB_USER'], $aProps['DB_PASS']);
-        self::grandAll($oMysqlI, $aProps, $io);
+        $this->grandAll($oMysqlI, $aProps, $io);
     }
-    private static function grandAll(mysqli $oMysqlI, $aProps, IOInterface $io)
+    private function grandAll(mysqli $oMysqlI, $aProps, IOInterface $io)
     {
         $io->write("Creating user");
         $oMysqlI->query("CREATE USER IF NOT EXISTS {$aProps['DB_USER']}.localhost IDENTIFIED BY '{$aProps['DB_PASS']};");
         $io->write("Grant privileges to user");
         $oMysqlI->query("GRANT ALL PRIVILEGES ON {$aProps['DB_USER']}.* TO '{$aProps['DB_USER']}'@'{$aProps['DB_HOST']}';");
     }
-    private static function createDbQuery(mysqli $oMysqlI, array $sDbName, IOInterface $io):bool
+    private function createDbQuery(mysqli $oMysqlI, array $sDbName, IOInterface $io):bool
     {
         $io->write("Create database $sDbName if not exists");
         if($oMysqlI->query('CREATE DATABASE IF NOT EXISTS ' . $sDbName) === true)
@@ -102,20 +113,20 @@ class Db
         $io->write("Could not create");
         return false;
     }
-    private static final function tryCreateDb(array $aProps, IOInterface $io):bool
+    public function tryCreateDb(array $aProps, IOInterface $io):bool
     {
         $io->write("Attempting to create the database " . $aProps['DB_NAME']);
         $oMysqlI = new mysqli($aProps['DB_SERVER'], $aProps['DB_USER'], $aProps['DB_PASS']);
         if(!$oMysqlI->select_db($aProps['DB_NAME']))
         {
-            if(self::createDbQuery($oMysqlI, $aProps['DB_NAME'], $io))
+            if($this->createDbQuery($oMysqlI, $aProps['DB_NAME'], $io))
             {
                 return true;
             }
         }
         return false;
     }
-    private static final function askRootLogin(array $aConnectProps, IOInterface $io):array
+    private function askRootLogin(array $aConnectProps, IOInterface $io):array
     {
         $io->write("We need a mysql account with CREATE DATABASE and CREATE USER privileges to create the " .
             " database and/or create the user that you specified in your .env file");
@@ -135,16 +146,16 @@ class Db
         return $aConnectProps;
     }
 
-    private static final function envFileContainsRootLogin(array $aConnectProps):bool
+    function envFileContainsRootLogin(array $aConnectProps):bool
     {
         return isset($aConnectProps['ROOT_DB_USER']) && isset($aConnectProps['ROOT_DB_PASS']);
     }
-    private static final function databaseExists(array $aProps):bool
+    function databaseExists(array $aProps):bool
     {
         $oMysqlI = new mysqli($aProps['DB_SERVER'], $aProps['DB_USER'], $aProps['DB_PASS']);
         return $oMysqlI->select_db($aProps['DB_NAME']);
     }
-    private static final function canConnectWithNormalParams(array $aProps):bool
+    function canConnectWithNormalParams(array $aProps):bool
     {
         return (new mysqli($aProps['DB_SERVER'], $aProps['DB_USER'], $aProps['DB_PASS']) !== false);
 
