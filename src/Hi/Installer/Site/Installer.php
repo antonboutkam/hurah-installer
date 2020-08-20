@@ -29,11 +29,11 @@ class Installer extends AbstractInstaller implements InstallerInterface
     public function getInstallPath(PackageInterface $package)
     {
         $prefix = substr($package->getPrettyName(), 0, 10);
-        if ('novum-api-' !== $prefix && 'hurah-api-' !== $prefix ) {
+        if ('novum-site-' !== $prefix && 'hurah-site-' !== $prefix ) {
             throw new \InvalidArgumentException(
-                'Unable to install template, Novum Api templates '
+                'Unable to install template, Novum Site templates '
                 .'should always start their package name with '
-                .'"novum-api-" or "hurah-api-"'
+                .'"novum-site-" or "hurah-site-" instead got ' . $package->getPrettyName()
             );
         }
         return parent::getInstallPath($package);
