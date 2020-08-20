@@ -47,6 +47,7 @@ final class Installer extends AbstractInstaller implements InstallerInterface
         $this->message("Putting new core system in place");
         rename(INSTALL_DIR_TEMP, INSTALL_DIR);
 
+
         $this->message("Core system installed");
 
         sleep(4);
