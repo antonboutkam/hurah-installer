@@ -23,24 +23,6 @@ class Installer extends AbstractInstaller implements InstallerInterface
         return 'system/public_html/'.substr($package->getPrettyName(), 10);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getInstallPath(PackageInterface $package)
-    {
-        $prefix = substr($package->getPrettyName(), 0, 10);
-        if ('novum-site-' !== $prefix && 'hurah-site-' !== $prefix ) {
-            throw new \InvalidArgumentException(
-                'Unable to install template, Novum Site templates '
-                .'should always start their package name with '
-                .'"novum-site-" or "hurah-site-" instead got ' . $package->getPrettyName()
-            );
-        }
-        return parent::getInstallPath($package);
-    }
-    /**
-     * {@inheritDoc}
-     */
     public function supports($packageType)
     {
         return 'novum-api' === $packageType || 'hurah-api' === $packageType ;
