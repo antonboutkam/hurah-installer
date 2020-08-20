@@ -17,12 +17,27 @@ class Database
      */
     public function install(array $aDatabaseProps, string $sOriginalInstallPath, IOInterface $io)
     {
-        $io->write("Checking database availability.");
-        Db::create($aDatabaseProps, $io);
+        try
+        {
+            $io->write(sprintf(" -  Novum domain installer <info>%s</info> ", "database availability"));
+            $oDb = new Db();
+            $oDb->create($aDatabaseProps, $io);
+
+        }
+        catch (InstallationException $e)
+        {
+            $io->writeError($e->getMessage());
+        }
+
+
+        $io->write(json_encode($aDatabaseProps));
 
     }
     public function uninstall(string $sDomainConfigFolder, string $sOriginalInstallPath, IOInterface $io)
     {
-       $io->write("Not removing database, you need to manually do this");
+        $io->write(" -  Novum uninstaller <warning>%s</warning>", "Not removing database, you need to do this manually.");
+
+
+        $io->write("");
     }
 }

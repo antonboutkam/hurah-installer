@@ -10,16 +10,22 @@
 			"Hi\\": "src/Hi"
 		}
 	},
+	"autoload-dev": {
+		"psr-4": {
+			"HiTest\\" : "test"
+		}
+	},
 	"extra": {
 		"class": "Hi\\Plugin"
 	},
 	"require": {
-		"composer/composer": "^1.3",
 		"vlucas/phpdotenv": "4.1",
+		"composer/composer": "^1.3",
 		"composer-plugin-api": "^1.0",
-		"ext-mysqli": "*"
+		"ext-mysqli": "*",
+		"ext-json": "*"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "9.2.3"
+		"phpunit/phpunit": "^9.3@dev"
 	}
 }
