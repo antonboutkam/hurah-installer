@@ -1,5 +1,5 @@
 <?php
-namespace Hi\Installer\Api;
+namespace Hi\Installer\Module;
 
 use Composer\Installer\InstallerInterface;
 use Composer\Package\PackageInterface;
@@ -7,8 +7,9 @@ use Composer\Repository\InstalledRepositoryInterface;
 use Hi\Installer\AbstractInstaller;
 use Hi\Installer\Util;
 
-final class Installer extends AbstractInstaller implements InstallerInterface
+class Installer extends AbstractInstaller implements InstallerInterface
 {
+
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
         symlink($this->getInstallPath($package), $this->getVirtualInstallPath($package));
@@ -19,7 +20,7 @@ final class Installer extends AbstractInstaller implements InstallerInterface
     }
     private function getVirtualInstallPath(PackageInterface $package):string
     {
-        return 'system/public_html/'.substr($package->getPrettyName(), 10);
+        return 'system/admin_modules/' . ucfirst(substr($package->getPrettyName(), 13));
     }
 
     /**
@@ -28,11 +29,11 @@ final class Installer extends AbstractInstaller implements InstallerInterface
     public function getInstallPath(PackageInterface $package)
     {
         $prefix = substr($package->getPrettyName(), 0, 10);
-        if ('novum-api-' !== $prefix && 'hurah-api-' !== $prefix ) {
+        if ('novum-module-' !== $prefix && 'hurah-module-' !== $prefix ) {
             throw new \InvalidArgumentException(
-                'Unable to install template, Novum Api templates '
-                .'should always start their package name with '
-                .'"novum-api-" or "hurah-api-", instead got ' . $package->getPrettyName()
+                'Unable to install module, Modules '
+                .'should always start their name with '
+                .'"novum-module-" or "hurah-module-"'
             );
         }
         return parent::getInstallPath($package);
@@ -42,6 +43,6 @@ final class Installer extends AbstractInstaller implements InstallerInterface
      */
     public function supports($packageType)
     {
-        return 'novum-api' === $packageType || 'hurah-api' === $packageType ;
+        return 'novum-module' === $packageType || 'hurah-module' === $packageType ;
     }
 }
