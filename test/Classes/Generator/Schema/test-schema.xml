@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="hurah" custom="NovumBrp" crudRoot="Custom/NovumBrp" crudNamespace="Crud\Custom\NovumBrp" defaultIdMethod="native" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../schema/schema-plus-crud.xsd" >
+
+    <modules>
+        <module title="Stamtabellen" icon="table" name="Stamtabellen" />
+        <module title="Basisregistratie" icon="book" name="Basisregistratie" />
+        <module title="Datageneratie" icon="wheelchair" name="Datageneratie" />
+    </modules>
+
+    <table name="relatie_type" module="Stamtabellen" title="Relatie vormen" phpName="RelatieType" namespace="Model\Custom\NovumBrp\Stam" apiExposed="true" apiDesc="Dit endpoint bevat relatie typen.">
+        <column name="id" icon="tag" title="Id" type="INTEGER" form="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column title="Soort relatie"  name="naam" phpName="Naam" icon="user" form="STRING" required="true"/>
+        <behavior name="timestampable"/>
+    </table>
+    <table name="geslacht" module="Stamtabellen" title="Geslachten" phpName="Geslacht" namespace="Model\Custom\NovumBrp\Stam" apiExposed="true" apiDesc="Dit endpoint bevat geslachten.">
+        <column name="id" icon="tag" title="Id" type="INTEGER" form="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column title="Geslacht" icon="tag" name="naam" phpName="Naam" form="STRING" required="true"/>
+        <column title="Geslacht kort" icon="tag" name="naam_kort" phpName="NaamKort" form="STRING" required="true"/>
+        <behavior name="timestampable"/>
+    </table>
+    <table name="provincie" module="Stamtabellen" title="Provincies" phpName="Provincie" namespace="Model\Custom\NovumBrp\Stam" apiExposed="true" apiDesc="Dit endpoint provincies.">
+        <column name="id" title="Id" icon="tag" type="INTEGER" form="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column title="Provincie" icon="tag" name="naam" phpName="Naam" form="STRING" required="true"/>
+        <behavior name="timestampable"/>
+    </table>
+    <table name="gemeente" module="Stamtabellen" title="Gemeentes" phpName="Gemeente" namespace="Model\Custom\NovumBrp\Stam" apiExposed="true" apiDesc="Dit endpoint bevat gemeentes.">
+        <column name="id" icon="flag"  title="Id" type="INTEGER" form="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="naam" icon="map-marker"  title="Gemeente" form="STRING" required="true"/>
+        <behavior name="timestampable"/>
+    </table>
+    <table name="land" module="Stamtabellen" title="Landen" phpName="Land" namespace="Model\Custom\NovumBrp\Stam" apiExposed="true" apiDesc="Dit endpoint bevat landen.">
+        <column name="id" icon="tag"  title="Id" type="INTEGER" form="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="naam" icon="flag" title="Land" form="STRING" required="true"/>
+        <column name="iso_2" icon="flag"  title="Iso 2" type="CHAR" size="2" form="STRING" required="true"/>
+        <column name="calling_code" icon="phone" title="Landnummer" form="STRING"  required="true"/>
+        <behavior name="timestampable"/>
+    </table>
+
+    <table name="persoon" module="Basisregistratie" title="Personen" phpName="Persoon" namespace="Model\Custom\NovumBrp\Persoonsgegevens" apiExposed="true" apiDesc="Dit namaak persoonsgegevens.">
+        <column name="id" title="Id" icon="tag" type="INTEGER" form="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="bsn" icon="tag" title="Burgerservice nummer" form="BSN" required="true"/>
+        <column name="infix" icon="user" title="Tussenvoegsel" form="STRING"/>
+
+        <column name="voornaam"  icon="user" title="Voornaam" form="STRING" required="true"/>
+        <column name="achternaam" icon="user" title="Achternaam" form="STRING" required="true"/>
+
+        <column name="vader_id" icon="group" title="Vader" phpName="Vader" lookupVisible="Model\Custom\NovumBrp\Persoonsgegevens\Persoon.Bsn" form="LOOKUP" type="INTEGER" />
+        <column name="moeder_id" icon="group" title="Moeder" phpName="Moeder" lookupVisible="Model\Custom\NovumBrp\Persoonsgegevens\Persoon.Bsn" form="LOOKUP" type="INTEGER" />
+        <column name="geslacht_id" icon="group"  title="Geslacht" form="LOOKUP" lookupVisible="Model\Custom\NovumBrp\Stam\Geslacht.Naam" type="INTEGER" required="true"/>
+
+        <column name="geboorte_datum" icon="calendar"  title="Geboortedatum" type="DATE" required="true" form="DATE" />
+        <column name="geboorte_plaats" icon="map-marker" title="Geboorteplaats" form="STRING" />
+        <!-- @todo String -->
+        <column name="geboorte_land_id" icon="map-marker" title="Geboorteland" lookupVisible="Model\Custom\NovumBrp\Stam\Land.Naam" phpName="GeboorteLand" type="INTEGER" form="LOOKUP" />
+
+        <column name="immigratie_datum" icon="calendar" title="Immigratie datum" phpName="Immigratiedatum" type="DATE" form="DATETIME" />
+        <column name="heeft_nl_paspoort" icon="tag" title="Nederlands paspoort" phpName="HeeftNederlandsPaspoort" type="BOOLEAN" form="CHECKBOX" />
+
+        <column name="sterf_datum" icon="calendar" title="Sterf datum" form="DATE" type="DATE" />
+        <column name="sterf_plaats" icon="map-marker" title="Sterf plaats" form="STRING" />
+
+        <behavior name="timestampable"/>
+
+        <foreign-key foreignTable="land" onDelete="restrict">
+            <reference local="geboorte_land_id" foreign="id"/>
+        </foreign-key>
+
+        <foreign-key foreignTable="geslacht" onDelete="restrict">
+            <reference local="geslacht_id" foreign="id"/>
+        </foreign-key>
+
+        <foreign-key foreignTable="persoon" phpName="FkVader" onDelete="set null">
+            <reference local="vader_id" foreign="id"/>
+        </foreign-key>
+
+        <foreign-key foreignTable="persoon" phpName="FkMoeder" onDelete="set null">
+            <reference local="moeder_id" foreign="id"/>
+        </foreign-key>
+    </table>
+    <table name="adres" module="Basisregistratie" title="Adressen" phpName="Adres" namespace="Model\Custom\NovumBrp\Persoonsgegevens" apiExposed="true" apiDesc="Dit endpoint bevat namaak adres gegevens.">
+        <column name="id" icon="tag" title="Id" type="INTEGER" form="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="persoon_id" lookupVisible="Model\Custom\NovumBrp\Persoon.Bsn" title="Persoon" icon="user" form="LOOKUP" type="INTEGER" required="true"/>
+        <column name="provincie_id" title="Provincie" lookupVisible="Model\Custom\NovumBrp\Stam\Provincie.Naam" icon="map-marker" form="LOOKUP" type="INTEGER" required="true"/>
+        <column name="gemeente_id" title="Gemeente" lookupVisible="Model\Custom\NovumBrp\Stam\Gemeente.Naam" icon="building" form="LOOKUP" type="INTEGER" required="true"/>
+        <column name="straat" title="Straat" icon="home" form="STRING" />
+        <column name="huisnummer" icon="home" title="Huisnummer" form="STRING"  />
+        <column name="postcode" title="Postcode" form="POSTCODE" icon="envelope" size="6" />
+        <behavior name="timestampable"/>
+
+        <foreign-key foreignTable="provincie" onDelete="restrict">
+            <reference local="provincie_id" foreign="id"/>
+        </foreign-key>
+
+        <foreign-key foreignTable="gemeente" onDelete="restrict">
+            <reference local="gemeente_id" foreign="id"/>
+        </foreign-key>
+    </table>
+    <table name="relatie" module="Basisregistratie" title="Relaties" phpName="Relatie" namespace="Model\Custom\NovumBrp\Persoonsgegevens" apiExposed="true" apiDesc="Dit endpoint bevat namaak relaties tussen personen.">
+        <column name="id" icon="home" title="Id" type="INTEGER" form="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="relatie_type_id" title="Relatie type" lookupVisible="Model\Custom\NovumBrp\Stam\RelatieType.Naam" icon="group" form="LOOKUP" type="INTEGER" required="true"/>
+        <column name="relatie_start" icon="calendar" title="Start relatie" type="DATE" required="true" form="DATE" />
+        <column name="relatie_einde" icon="calendar" title="Einde relatie" type="DATE" required="true" form="DATE" />
+        <behavior name="timestampable"/>
+
+        <foreign-key foreignTable="relatie_type" phpName="RelatieType" onDelete="restrict">
+            <reference local="relatie_type_id" foreign="id"/>
+        </foreign-key>
+    </table>
+    <table name="persoon_relatie" module="Basisregistratie" phpName="Persoon_relatie" namespace="Model\Custom\NovumBrp\Persoonsgegevens" apiExposed="true" apiDesc="In dit endpoint zijn relaties tussen personen opgenomen.">
+        <column name="id" title="Id" icon="home"  type="INTEGER" form="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="relatie_id" title="Relatie" icon="user" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="persoon_id" lookupVisible="Model\Custom\NovumBrp\Persoon.Bsn" title="Persoon" icon="user" form="LOOKUP" type="INTEGER" required="true"/>
+
+        <foreign-key foreignTable="relatie" phpName="Relatie" onDelete="restrict">
+            <reference local="relatie_id" foreign="id"/>
+        </foreign-key>
+        <foreign-key foreignTable="persoon" phpName="Persoon" onDelete="restrict">
+            <reference local="persoon_id" foreign="id"/>
+        </foreign-key>
+
+        <behavior name="timestampable"/>
+    </table>
+    <table title="Voornamen" name="data_voornaam" module="Datageneratie" phpName="Voornaam" namespace="Model\Custom\NovumBrp\Data" apiExposed="true" apiDesc="Dit endpoint bevat voornamen.">
+        <column name="id" icon="tag" title="Id" type="INTEGER" form="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="naam" title="Naam" icon="user" form="STRING" required="true"/>
+        <column name="geslacht_id" title="Relatie" icon="user" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="aantal" icon="tag" title="Aantal" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="populariteit_positie" icon="tag" title="Populariteit positie" form="INTEGER" type="INTEGER" required="true"/>
+
+        <foreign-key foreignTable="geslacht" phpName="Geslacht" onDelete="restrict">
+            <reference local="geslacht_id" foreign="id"/>
+        </foreign-key>
+
+        <behavior name="timestampable"/>
+    </table>
+    <table title="Familienamen" name="data_familienaam" module="Datageneratie" phpName="Familienaam" namespace="Model\Custom\NovumBrp\Data" apiExposed="true" apiDesc="Dit endpoint bevat alle achternamen die in Nederland voorkomen. .">
+        <column name="id" icon="tag" title="Id" type="INTEGER" form="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="prefix" title="Prefix" icon="user" form="STRING"/>
+        <column name="naam" title="Naam" icon="user" form="STRING" required="true"/>
+        <column name="in_top" title="In top" icon="user" type="BOOLEAN" form="CHECKBOX" default="false"/>
+
+        <column name="rang" title="Rang" icon="calendar" type="INTEGER" form="INTEGER" default="false"/>
+        <column name="aantal_2007" title="Aantal 2007" icon="group" type="INTEGER" form="INTEGER" default="null"/>
+        <column name="aantal_1947" title="Aantal 1947" icon="group" type="INTEGER" form="INTEGER" default="null"/>
+
+        <column name="calc_aantal_huidig_jaar" title="Aantal relatief" icon="group" type="INTEGER" form="INTEGER" default="null"/>
+        <column name="calc_ppm" title="Aantal per miljoen" icon="group" type="INTEGER" form="INTEGER" default="null"/>
+
+        <index name="index_naam">
+            <index-column name="naam"/>
+        </index>
+        <behavior name="timestampable"/>
+    </table>
+    <table title="Geboorte cijfers" name="data_geboorte" module="Datageneratie" phpName="Geboorte" namespace="Model\Custom\NovumBrp\Data" apiExposed="true" apiDesc="In dit endpoint vind je hoeveel jongetjes en hoeveel meisjes er geboren zijn per dag sinds het jaar 1900. Dit endpoint is bedold voor data generatie.">
+        <column name="id" icon="tag" title="Id" type="INTEGER" form="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+
+        <column name="datum" title="Datum" icon="calendar" form="DATE" type="DATE" required="true"/>
+        <column name="jongens_geboren"  icon="tag" title="Aantal jongens geboren" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="meisjes_geboren" icon="tag" title="Aantal meisjes geboren" form="INTEGER" type="INTEGER" required="true"/>
+    </table>
+    <table title="Begin der tijden" name="data_initial" module="Datageneratie" phpName="InitialPeople" namespace="Model\Custom\NovumBrp\Data" apiExposed="true" apiDesc="In deze tabel staat de te genereren data, dus welke mensen waren er al voor het begin der tijden vanuit database perspectief. .">
+        <column name="id" icon="tag" title="Id" type="INTEGER" form="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+
+        <column name="jaartal" icon="calendar" title="Jaartal" form="INTEGER" type="INTEGER" required="true"/>
+
+        <column name="mannen" icon="tag" title="Aantal mannen" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="vrouwen" icon="tag"  title="Aantal vrouwen" form="INTEGER" type="INTEGER" required="true"/>
+
+        <column name="leeftijd_0_20" icon="tag" title="Personen in de leeftijd 0 tot 20" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="leeftijd_20_45" icon="tag" title="Personen in de leeftijd 20 tot 45" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="leeftijd_45_65" icon="tag" title="Personen in de leeftijd 45 tot 65" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="leeftijd_65_80" icon="tag" title="Personen in de leeftijd 65 tot 80" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="leeftijd_80_106" icon="tag" title="Personen in de leeftijd 80 tot 106" form="INTEGER" type="INTEGER" required="true"/>
+
+        <column name="landsdeel_noord" icon="tag" title="Personen in noord nederland" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="landsdeel_oost" icon="tag" title="Personen in oost nederland" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="landsdeel_west" icon="tag" title="Personen in west nederland" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="landsdeel_zuid" icon="tag" title="Personen in zuid nederland" form="INTEGER" type="INTEGER" required="true"/>
+
+        <column name="burgerlijke_ongehuwd" icon="tag" title="Totaal aantal ongehuwde personen" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="burgerlijke_gehuwd" icon="tag" title="Totaal aantal gehuwde personen" form="INTEGER" type="INTEGER" required="true"/>
+        <column name="burgerlijke_gescheiden" icon="tag" title="Totaal aantal gescheiden personen" form="INTEGER" type="INTEGER" required="true"/>
+
+    </table>
+
+    <external-schema filename="../../schema/core-schema-extra.xml" />
+    <external-schema filename="../../schema/core-schema.xml" />
+</database>

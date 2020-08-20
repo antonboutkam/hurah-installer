@@ -13,7 +13,8 @@ class Plugin implements PluginInterface
 {
     public function activate(Composer $composer, IOInterface $io)
     {
-        $io->write("Activating Novum component loaders");
+
+        $io->write("  - Activating <info>Novum component loaders</info>");
         $oInstallationManager = $composer->getInstallationManager();
         $oSiteInstaller = new SiteInstaller($io, $composer);
         $oInstallationManager->addInstaller($oSiteInstaller);

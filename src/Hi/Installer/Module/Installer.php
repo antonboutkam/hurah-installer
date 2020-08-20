@@ -1,5 +1,5 @@
 <?php
-namespace Hi\Installer\Site;
+namespace Hi\Installer\Module;
 
 use Composer\Installer\InstallerInterface;
 use Composer\Package\PackageInterface;
@@ -12,7 +12,6 @@ class Installer extends AbstractInstaller implements InstallerInterface
 
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
-        $this->io->write("Symlinking " . $this->getInstallPath($package) . ' => '. $this->getVirtualInstallPath($package));
         symlink($this->getInstallPath($package), $this->getVirtualInstallPath($package));
     }
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
@@ -21,11 +20,29 @@ class Installer extends AbstractInstaller implements InstallerInterface
     }
     private function getVirtualInstallPath(PackageInterface $package):string
     {
-        return 'system/public_html/'.substr($package->getPrettyName(), 10);
+        return 'system/admin_modules/' . ucfirst(substr($package->getPrettyName(), 13));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getInstallPath(PackageInterface $package)
+    {
+        $prefix = substr($package->getPrettyName(), 0, 10);
+        if ('novum-module-' !== $prefix && 'hurah-module-' !== $prefix ) {
+            throw new \InvalidArgumentException(
+                'Unable to install module, Modules '
+                .'should always start their name with '
+                .'"novum-module-" or "hurah-module-"'
+            );
+        }
+        return parent::getInstallPath($package);
+    }
+    /**
+     * {@inheritDoc}
+     */
     public function supports($packageType)
     {
-        return 'novum-api' === $packageType || 'hurah-api' === $packageType ;
+        return 'novum-module' === $packageType || 'hurah-module' === $packageType ;
     }
 }
