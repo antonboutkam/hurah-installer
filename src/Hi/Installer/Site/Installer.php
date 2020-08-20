@@ -21,9 +21,13 @@ class Installer extends AbstractInstaller implements InstallerInterface
     }
     private function getVirtualInstallPath(PackageInterface $package):string
     {
-        return 'system/public_html/'.substr($package->getPrettyName(), 10);
+        $sDirName = './system/public_html';
+        if(!is_dir($sDirName))
+        {
+            mkdir($sDirName, 0777, true);
+        }
+        return $sDirName . '/' . substr($package->getPrettyName(), 10);
     }
-
     public function supports($packageType)
     {
         return 'novum-api' === $packageType || 'hurah-api' === $packageType ;
