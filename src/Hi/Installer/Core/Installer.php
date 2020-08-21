@@ -12,8 +12,6 @@ final class Installer extends AbstractInstaller implements InstallerInterface
     private function loadConstants(PackageInterface $package):void
     {
         define('INSTALL_DIR', $this->getVirtualInstallPath($package));
-        define('PREV_INSTALL_DIR', INSTALL_DIR . '.prev');
-        define('INSTALL_DIR_TEMP', INSTALL_DIR . '.new');
     }
     private function message(string $sMessage)
     {
@@ -22,14 +20,19 @@ final class Installer extends AbstractInstaller implements InstallerInterface
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
         $this->message("Installing core system");
-
         parent::install($repo, $package);
-
         $this->loadConstants($package);
 
-        $this->message("Create intermediate location for building.");
-        $this->message("Symlink to: " . INSTALL_DIR_TEMP);
+        symlink($this->getInstallPath($package) . '', INSTALL_DIR_TEMP);
 
+        $aRequiredDirs = [
+            'admin_modules/Custom' => 'admin_modules',
+        ];
+
+        foreach ($aRequiredDirs as $sDir)
+        {
+            symlink($this->getInstallPath($package). '/' .  $sDir, $this->getVirtualInstallPath($package) . '/' .  $sDir)
+        }
 
         symlink($this->getInstallPath($package), INSTALL_DIR_TEMP);
 
@@ -63,11 +66,12 @@ final class Installer extends AbstractInstaller implements InstallerInterface
     }
     private function getVirtualInstallPath(PackageInterface $package):string
     {
-        if(file_exists('system'))
+        $sSysDir = "./system";
+        if(!is_dir($sSysDir))
         {
-            $this->message("Could not crate symlink system, a file with that name is alredy in place");
+            mkdir($sSysDir);
         }
-        return 'system';
+        return $sSysDir;
     }
     /**
      * {@inheritDoc}
