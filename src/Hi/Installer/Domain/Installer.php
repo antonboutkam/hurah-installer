@@ -25,7 +25,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
         {
             $this->io->write("Cannot create file structure");
         }
-
+        /*
         try
         {
             $oDotenv = Dotenv::createImmutable($this->getInstallPath($package));
@@ -38,14 +38,14 @@ class Installer extends AbstractInstaller implements InstallerInterface
         {
             $this->io->write("Cannot create database, .env file is missing");
         }
-
-
+        */
     }
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
+        /*
         $oDotenv = Dotenv::createImmutable($this->getInstallPath($package));
         $oDotenv->load();
-
+        */
         parent::uninstall($repo, $package);
         $oFileStructure = new FileStructure();
         $oFileStructure->uninstall($_SERVER['SYSTEM_ID'], $this->getInstallPath($package), $this->io);
