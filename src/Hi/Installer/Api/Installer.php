@@ -21,7 +21,7 @@ final class Installer extends AbstractInstaller implements InstallerInterface
     }
     private function getVirtualInstallPath(PackageInterface $package):string
     {
-        $sDirName = './system';
+        $sDirName = './system/public_html';
         if(!is_dir($sDirName))
         {
             mkdir($sDirName, 0777, true);
