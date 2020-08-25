@@ -4,51 +4,60 @@ namespace Hi\Installer\Domain;
 use Composer\Package\PackageInterface;
 use Composer\Installer\InstallerInterface;
 use Composer\Repository\InstalledRepositoryInterface;
-use Dotenv\Dotenv;
-use Exception;
+use Hi\Helpers\StructureCreator;
 use Hi\Installer\AbstractInstaller;
-use Hi\Installer\Domain\Component\Database;
-use Hi\Installer\Domain\Component\FileStructure;
+use Hi\Helpers\Console;
+use Hi\Helpers\DirectoryStructure;
+use Hi\Installer\Util;
+use phpDocumentor\Reflection\Utils;
 
 class Installer extends AbstractInstaller implements InstallerInterface
 {
+    /**
+     * @param InstalledRepositoryInterface $repo
+     * @param PackageInterface $package
+     */
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
+        $sSystemId = str_replace('/', '.', str_replace('-domain', '', $package->getName()));
+        /**
+         * Installing all files on the normal location inside vendor
+         */
         parent::install($repo, $package);
+        $oConsole = new Console($this->io);
+        $oDirectoryStructure = new DirectoryStructure();
+        StructureCreator::create($oDirectoryStructure, $this->io);
 
-        try
-        {
-            $oFileStructure = new FileStructure();
-            $oFileStructure->install($_SERVER['SYSTEM_ID'], $this->getInstallPath($package), $this->io);
-        }
-        catch (Exception $e)
-        {
-            $this->io->write("Cannot create file structure");
-        }
-        /*
-        try
-        {
-            $oDotenv = Dotenv::createImmutable($this->getInstallPath($package));
-            $oDotenv->load();
+        /**
+         * Generating a namespace
+         */
+        list($sOrg, $sDomain) = explode('.', str_replace('domain-', '', $sSystemId));
+        $sDomainNsPart = preg_replace("/[^A-Za-z0-9 ]/", '_', $sDomain);
+        $sNamespace = ucfirst($sOrg).ucfirst($sDomainNsPart);
 
-            $oDatabase = new Database();
-            $oDatabase->install($_SERVER, $this->getInstallPath($package), $this->io);
-        }
-        catch (Exception $e)
+        $oConsole->log("Generated namespace based on package name $sSystemId -> $sNamespace");
+
+
+        /**
+         * Create required directories
+         */
+        $aMapping = $oDirectoryStructure->getDomainSystemSymlinkMapping($sSystemId, $sNamespace);
+
+        foreach ($aMapping as $sFrom => $sTo)
         {
-            $this->io->write("Cannot create database, .env file is missing");
+            $oConsole->log('Symlinking ' . $this->getInstallPath($package) . '/' . $sFrom . ' => ' . $sTo);
+            symlink($this->getInstallPath($package) . '/' . $sFrom, $sTo);
         }
-        */
+
+        /**
+         * Create public symlink
+         */
+        symlink($this->getInstallPath($package) . '/' . $sFrom, $sTo);
+
     }
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
-        /*
-        $oDotenv = Dotenv::createImmutable($this->getInstallPath($package));
-        $oDotenv->load();
-        */
-        parent::uninstall($repo, $package);
-        $oFileStructure = new FileStructure();
-        $oFileStructure->uninstall($_SERVER['SYSTEM_ID'], $this->getInstallPath($package), $this->io);
+
     }
 
 

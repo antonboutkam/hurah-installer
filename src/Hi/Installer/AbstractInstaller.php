@@ -8,4 +8,5 @@ use Composer\Installer\LibraryInstaller;
 abstract class AbstractInstaller extends LibraryInstaller implements InstallerInterface
 {
 
+
 }
