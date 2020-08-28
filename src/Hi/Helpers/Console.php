@@ -13,8 +13,8 @@ class Console
         $this->io = $io;
     }
 
-    function log($sMessage)
+    function log($sMessage, $sTopic = 'Novum installer')
     {
-        $this->io->write(" -  Novum installer <info>{$sMessage}</info>");
+        $this->io->write(" -  $sTopic <info>{$sMessage}</info>");
     }
 }

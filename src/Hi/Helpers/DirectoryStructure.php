@@ -6,6 +6,7 @@ class DirectoryStructure
 {
     private $sSystemDir;
     private $sPublicDir;
+    private $sDomainDir;
 
     public function __construct()
     {
@@ -16,6 +17,7 @@ class DirectoryStructure
 
         $this->sSystemDir = $aStructure['system_dir'];
         $this->sPublicDir = $aStructure['public_dir'];
+        $this->sDomainDir = $aStructure['domain_dir'];
 
     }
     function getPublicSitePath(string $sSiteDir):string
@@ -30,6 +32,10 @@ class DirectoryStructure
     {
         return $this->sPublicDir;
     }
+    function getDomainDir():string
+    {
+        return $this->sDomainDir;
+    }
 
     function getSystemDir():string
     {
@@ -42,8 +48,8 @@ class DirectoryStructure
             'admin_modules' => $this->sSystemDir . '/admin_modules/Custom/' . $sCustomNamespace,
             'classes/Crud' => $this->sSystemDir . '/classes/Crud/Custom/' . $sCustomNamespace,
             'classes/Model' => $this->sSystemDir . '/classes/Model/Custom/' . $sCustomNamespace,
-            'style' => $this->sSystemDir . '/admin_public_html/custom/' . $sSystemId,
-            'schema.xml' => $this->sSystemDir . '/build/database/' . $sSystemId . '/',
+            'style' => $this->sSystemDir . '/admin_public_html/Custom/' . $sSystemId,
+            'schema.xml' => $this->sSystemDir . '/build/database/' . $sSystemId . '/schema.xml',
         ];
     }
 

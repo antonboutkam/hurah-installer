@@ -19,15 +19,15 @@ class Installer extends AbstractInstaller implements InstallerInterface
      */
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
-        $sSystemId = str_replace('/', '.', str_replace('-domain', '', $package->getName()));
+        $oConsole = new Console($this->io);
+
+        $sSystemId = str_replace('/', '.', str_replace('domain-', '', $package->getName()));
+        $oConsole->log("Generated system id: $sSystemId", 'Novum domain installer');
         /**
          * Installing all files on the normal location inside vendor
          */
         parent::install($repo, $package);
         $oConsole = new Console($this->io);
-        $oDirectoryStructure = new DirectoryStructure();
-        StructureCreator::create($oDirectoryStructure, $this->io);
-
         /**
          * Generating a namespace
          */
@@ -35,24 +35,41 @@ class Installer extends AbstractInstaller implements InstallerInterface
         $sDomainNsPart = preg_replace("/[^A-Za-z0-9 ]/", '_', $sDomain);
         $sNamespace = ucfirst($sOrg).ucfirst($sDomainNsPart);
 
-        $oConsole->log("Generated namespace based on package name $sSystemId -> $sNamespace");
-
+        $oConsole->log("Generated namespace $sSystemId -> $sNamespace", 'Novum domain installer');
 
         /**
          * Create required directories
          */
+        $oConsole->log("Setting up base file structure", 'Novum domain installer');
+        $oDirectoryStructure = new DirectoryStructure();
+        StructureCreator::create($oDirectoryStructure, $this->io);
+
         $aMapping = $oDirectoryStructure->getDomainSystemSymlinkMapping($sSystemId, $sNamespace);
 
         foreach ($aMapping as $sFrom => $sTo)
         {
-            $oConsole->log('Symlinking ' . $this->getInstallPath($package) . '/' . $sFrom . ' => ' . $sTo);
+            $sParentDir = dirname($sTo);
+            if(!is_dir($sParentDir))
+            {
+                mkdir($sParentDir, 0777, true);
+                $oConsole->log('Creating directory ' . $sParentDir, 'Novum domain installer');
+            }
+            $oConsole->log('Symlinking ' . $this->getInstallPath($package) . '/' . $sFrom . ' => ' . $sTo, 'Novum domain installer');
             symlink($this->getInstallPath($package) . '/' . $sFrom, $sTo);
         }
 
         /**
          * Create public symlink
          */
-        symlink($this->getInstallPath($package) . '/' . $sFrom, $sTo);
+        $sDomainsRoot = $oDirectoryStructure->getDomainDir();
+
+        if(!is_dir($sDomainsRoot))
+        {
+            mkdir($sDomainsRoot, 0777, true);
+        }
+        $sDomainDir = $sDomainsRoot . '/' . $sSystemId;
+        $oConsole->log('Creating public view ' . $this->getInstallPath($package). ' => ' . $sDomainDir, 'Novum domain installer');
+        symlink($this->getInstallPath($package), $sDomainDir);
 
     }
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
