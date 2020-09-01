@@ -20,9 +20,10 @@ class DirectoryStructure
         $this->sDomainDir = $aStructure['domain_dir'];
 
     }
-    function getPublicSitePath(string $sSiteDir):string
+    function getPublicSitePath(string $sSiteDir, int $iDirsUp = 0):string
     {
-        return $this->getPublicDir() . '/' . $sSiteDir;
+
+        return str_repeat('../', $iDirsUp) . $this->getPublicDir() . '/' . $sSiteDir;
     }
     function getSystemSitePath(string $sSiteDir):string
     {
