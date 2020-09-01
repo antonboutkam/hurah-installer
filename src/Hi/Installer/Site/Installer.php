@@ -33,19 +33,20 @@ class Installer extends AbstractInstaller implements InstallerInterface
          */
         parent::install($repo, $package);
 
-        $oConsole->log('Symlinking ' . $this->getInstallPath($package) . ' => ' . $oDirectoryStructure->getPublicSitePath($sSiteDir), $this->installerName);
+
+        $oConsole->log('Symlinking ' . $this->getInstallPath($package, 2) . ' => ' . $oDirectoryStructure->getPublicSitePath($sSiteDir), $this->installerName);
         symlink($this->getInstallPath($package), $oDirectoryStructure->getPublicSitePath($sSiteDir));
 
         /**
          * Symlinking into system folder
          */
-        $oConsole->log('Symlinking ' . $this->getInstallPath($package) . ' => ' . $oDirectoryStructure->getSystemSitePath($sSiteDir), $this->installerName);
+        $oConsole->log('Symlinking ' . $this->getInstallPath($package, 2) . ' => ' . $oDirectoryStructure->getSystemSitePath($sSiteDir), $this->installerName);
         symlink($this->getInstallPath($package), $oDirectoryStructure->getSystemSitePath($sSiteDir));
 
         /**
          * Symlinking into public folder
          */
-        $sSitesDir = $oDirectoryStructure->getPublicSitePath($sSiteDir);
+        $sSitesDir = $oDirectoryStructure->getPublicSitePath($sSiteDir, 1);
         if(!is_dir(dirname($sSitesDir)))
         {
             mkdir(dirname($sSitesDir), 0777, true);

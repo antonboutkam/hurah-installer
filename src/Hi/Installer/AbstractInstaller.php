@@ -9,4 +9,12 @@ abstract class AbstractInstaller extends LibraryInstaller implements InstallerIn
 {
 
 
+    function getInstallPath(\Composer\Package\PackageInterface $package, int $iDirsUp = 0):string
+    {
+        $sPrepend = str_repeat('../', $iDirsUp) .
+        $sAbsoluteInstallPath = parent::getInstallPath($package);
+        $sRelativeInstallPath = preg_replace('/.+\/vendor/', 'vendor', $sAbsoluteInstallPath);
+
+        return $sPrepend . $sRelativeInstallPath;
+    }
 }
