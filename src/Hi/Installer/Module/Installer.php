@@ -4,14 +4,16 @@ namespace Hi\Installer\Module;
 use Composer\Installer\InstallerInterface;
 use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
-use Hi\Installer\AbstractInstaller;
-use Hi\Installer\Util;
+use Hi\Helpers\AbstractInstaller;
+use Hi\Helpers\StructureCreator;
+use Hi\Helpers\Util;
 
 class Installer extends AbstractInstaller implements InstallerInterface
 {
 
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
+        StructureCreator::create();
         symlink($this->getInstallPath($package), $this->getVirtualInstallPath($package));
     }
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)

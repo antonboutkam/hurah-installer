@@ -1,0 +1,7 @@
+{
+	"system_dir" 	: ".system",
+	"public_dir" 	: "public",
+	"domain_dir" 	: "domain",
+	"assets_dir" 	: "assets",
+	"log_dir" 		: "data/log"
+}

@@ -3,8 +3,13 @@ namespace Hi\Installer;
 
 final class Util
 {
+
     public static function removeSymlink($path)
     {
+        if(!file_exists($path))
+        {
+            return false;
+        }
         if (PHP_SHLIB_SUFFIX === 'dll')
         {
             // windows
