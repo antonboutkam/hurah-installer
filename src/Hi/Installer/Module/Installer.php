@@ -14,7 +14,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
         StructureCreator::create();
-        symlink($this->getInstallPath($package), $this->getVirtualInstallPath($package));
+        symlink($this->getRelativeInstallPath($package), $this->getVirtualInstallPath($package));
     }
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
     {

@@ -28,15 +28,15 @@ final class Installer extends AbstractInstaller implements InstallerInterface
         /**
          * Symlinking to the system folder
          */
-        $oConsole->log('Symlinking ' . $this->getInstallPath($package) . ' => ' .  $oDirectoryStructure->getSystemDir(), 'Novum core installer');
+        $oConsole->log('Symlinking ' . $this->getRelativeInstallPath($package) . ' => ' .  $oDirectoryStructure->getSystemDir(), 'Novum core installer');
 
-        symlink($this->getInstallPath($package), $oDirectoryStructure->getSystemDir());
+        symlink($this->getRelativeInstallPath($package), $oDirectoryStructure->getSystemDir());
         $oConsole->log("All done", 'Novum core installer');
     }
 
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
-        Util::removeSymlink($this->getInstallPath($package));
+        Util::removeSymlink($this->getRelativeInstallPath($package));
     }
 
     /**
