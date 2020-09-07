@@ -22,7 +22,6 @@ class DirectoryStructure
     }
     function getPublicSitePath(string $sSiteDir, int $iDirsUp = 0):string
     {
-
         return str_repeat('../', $iDirsUp) . $this->getPublicDir() . '/' . $sSiteDir;
     }
     function getSystemSitePath(string $sSiteDir):string

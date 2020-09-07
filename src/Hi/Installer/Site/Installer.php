@@ -33,24 +33,24 @@ class Installer extends AbstractInstaller implements InstallerInterface
          */
         parent::install($repo, $package);
 
-
-        $oConsole->log('Symlinking ' . $this->getRelativeInstallPath($package, 2) . ' => ' . $oDirectoryStructure->getPublicSitePath($sSiteDir), $this->installerName);
-        symlink($this->getRelativeInstallPath($package), $oDirectoryStructure->getPublicSitePath($sSiteDir));
+        /**
+         * Symlinking into public folder
+         */
+        $iDirsUp = 1;
+        $oConsole->log('Symlinking ' . $this->getRelativeInstallPath($package, $iDirsUp) . ' => ' . $oDirectoryStructure->getPublicSitePath($sSiteDir), $this->installerName);
+        symlink($this->getRelativeInstallPath($package, $iDirsUp), $oDirectoryStructure->getPublicSitePath($sSiteDir));
 
         /**
          * Symlinking into system folder
          */
-        $oConsole->log('Symlinking ' . $this->getRelativeInstallPath($package, 2) . ' => ' . $oDirectoryStructure->getSystemSitePath($sSiteDir), $this->installerName);
-        symlink($this->getRelativeInstallPath($package), $oDirectoryStructure->getSystemSitePath($sSiteDir));
+        $iDirsUp = 2;
 
-        /**
-         * Symlinking into public folder
-         */
-        $sSitesDir = $oDirectoryStructure->getPublicSitePath($sSiteDir, 1);
-        if(!is_dir(dirname($sSitesDir)))
-        {
-            mkdir(dirname($sSitesDir), 0777, true);
-        }
+        $sAbsoluteInstallPath = parent::getInstallPath($package);
+        $sPackageDir = basename($sAbsoluteInstallPath); //bv api-belastingdiest
+        $sRelativeVirtualInstallPath = "../$sPackageDir";
+        $oConsole->log("Symlinking $sRelativeVirtualInstallPath" . ' => ' . $oDirectoryStructure->getSystemSitePath($sSiteDir), $this->installerName);
+        symlink($sRelativeVirtualInstallPath, $oDirectoryStructure->getSystemSitePath($sSiteDir));
+
 
         $oConsole->log('Site installation completed', $this->installerName);
 
