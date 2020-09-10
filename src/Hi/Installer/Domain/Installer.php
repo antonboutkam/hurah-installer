@@ -54,8 +54,12 @@ class Installer extends AbstractInstaller implements InstallerInterface
                 mkdir($sParentDir, 0777, true);
                 $oConsole->log('Creating directory ' . $sParentDir, 'Novum domain installer');
             }
-            $oConsole->log('Symlinking ' . $this->getRelativeInstallPath($package) . '/' . $sFrom . ' => ' . $sTo, 'Novum domain installer');
-            symlink($this->getRelativeInstallPath($package) . '/' . $sFrom, $sTo);
+
+            $iDirsUp = substr_count($sTo, DIRECTORY_SEPARATOR) + 2; // + ./vendor/novum
+
+            $oConsole->log('Symlinking ' . $iDirsUp .' ' . $this->getRelativeInstallPath($package, $iDirsUp) . '/' . $sFrom . ' => ' . $sTo, 'Novum domain installer');
+
+            symlink($this->getRelativeInstallPath($package, $iDirsUp) . '/' . $sFrom, $sTo);
         }
 
         /**
@@ -67,9 +71,11 @@ class Installer extends AbstractInstaller implements InstallerInterface
         {
             mkdir($sDomainsRoot, 0777, true);
         }
+
+        $iDirsUp = 1;
         $sDomainDir = $sDomainsRoot . '/' . $sSystemId;
-        $oConsole->log('Creating public view ' . $this->getRelativeInstallPath($package). ' => ' . $sDomainDir, 'Novum domain installer');
-        symlink($this->getRelativeInstallPath($package), $sDomainDir);
+        $oConsole->log('Creating public view ' . $this->getRelativeInstallPath($package, $iDirsUp). ' => ' . $sDomainDir, 'Novum domain installer');
+        symlink($this->getRelativeInstallPath($package, $iDirsUp), $sDomainDir);
 
     }
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
