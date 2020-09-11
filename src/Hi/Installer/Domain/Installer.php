@@ -55,8 +55,6 @@ class Installer extends AbstractInstaller implements InstallerInterface
                 $oConsole->log('Creating directory ' . $sParentDir, 'Novum domain installer');
             }
 
-            $oConsole->log('To folder ' . $sTo, 'Novum domain installer');
-
             $iDirsUp = substr_count($sTo, DIRECTORY_SEPARATOR) + 2; // + ./vendor/novum
 
             $oConsole->log('Symlinking ' . $iDirsUp .' ' . $this->getRelativeInstallPath($package, $iDirsUp) . '/' . $sFrom . ' => ' . $sTo, 'Novum domain installer');

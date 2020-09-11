@@ -40,6 +40,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
         $oConsole->log('Symlinking ' . $this->getRelativeInstallPath($package, $iDirsUp) . ' => ' . $oDirectoryStructure->getPublicSitePath($sSiteDir), $this->installerName);
         symlink($this->getRelativeInstallPath($package, $iDirsUp), $oDirectoryStructure->getPublicSitePath($sSiteDir));
 
+
         /**
          * Symlinking into system folder
          */

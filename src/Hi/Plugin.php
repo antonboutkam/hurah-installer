@@ -2,14 +2,17 @@
 namespace Hi;
 
 use Composer\Composer;
+use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
+use Composer\Script\Event;
 use Hi\Installer\Site\Installer as SiteInstaller;
 use Hi\Installer\Api\Installer as ApiInstaller;
 use Hi\Installer\Domain\Installer as DomainInstaller;
 use Hi\Installer\Core\Installer as CoreInstaller;
+use Hi\Installer\Db\Installer as DbInstaller;
 
-class Plugin implements PluginInterface
+class Plugin implements PluginInterface, EventSubscriberInterface
 {
     public function activate(Composer $composer, IOInterface $io)
     {
@@ -35,5 +38,22 @@ class Plugin implements PluginInterface
             echo $e->getTraceAsString() . PHP_EOL;
         }
 
+    }
+
+    function postInstall(Event $event)
+    {
+        $oDbInstaller = new DbInstaller($io, $composer);
+        $oInstallationManager->addInstaller($oDbInstaller);
+    }
+    function postUpdate(Event $event)
+    {
+        $this->postInstall($event);
+    }
+    public static function getSubscribedEvents()
+    {
+        return [
+            'post-install-cmd' => 'postInstall',
+            'post-update-cmd'  => 'postUpdate',
+        ];
     }
 }
