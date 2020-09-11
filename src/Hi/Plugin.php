@@ -32,7 +32,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $oApiInstaller = new CoreInstaller($io, $composer);
             $oInstallationManager->addInstaller($oApiInstaller);
         }
-        catch(Exception $e)
+        catch(\Exception $e)
         {
             echo $e->getMessage() . PHP_EOL;
             echo $e->getTraceAsString() . PHP_EOL;
