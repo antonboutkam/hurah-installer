@@ -17,11 +17,14 @@ class StructureCreator
             mkdir($oDirectoryStructure->getDomainDir(), 0777, true);
         }
 
+        /*
+         Dit is een symlink, deze map moet niet aangemaakt worden.
         if(!is_dir($oDirectoryStructure->getSystemDir()))
         {
             $oConsole->log('Creating system directory ' . $oDirectoryStructure->getSystemDir(), 'Novum file structure');
             mkdir($oDirectoryStructure->getSystemDir(), 0777, true);
         }
+        */
 
         if(!is_dir($oDirectoryStructure->getPublicDir()))
         {
