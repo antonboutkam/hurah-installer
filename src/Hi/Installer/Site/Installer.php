@@ -37,8 +37,19 @@ class Installer extends AbstractInstaller implements InstallerInterface
          * Symlinking into public folder
          */
         $iDirsUp = 1;
-        $oConsole->log('Symlinking ' . $this->getRelativeInstallPath($package, $iDirsUp) . ' => ' . $oDirectoryStructure->getPublicSitePath($sSiteDir), $this->installerName);
-        symlink($this->getRelativeInstallPath($package, $iDirsUp), $oDirectoryStructure->getPublicSitePath($sSiteDir));
+
+        $sRelativeInstallPath = $this->getRelativeInstallPath($package, $iDirsUp);
+
+
+        $oConsole->log('Symlinking ' . $sRelativeInstallPath . ' => ' . $oDirectoryStructure->getPublicSitePath($sSiteDir), $this->installerName);
+
+        if(file_exists($oDirectoryStructure->getPublicSitePath($sSiteDir)))
+        {
+            $oConsole->log('Unlinking ' . $oDirectoryStructure->getPublicSitePath($sSiteDir), $this->installerName);
+            unlink($oDirectoryStructure->getPublicSitePath($sSiteDir));
+        }
+
+        symlink($sRelativeInstallPath, $oDirectoryStructure->getPublicSitePath($sSiteDir));
 
 
         /**
