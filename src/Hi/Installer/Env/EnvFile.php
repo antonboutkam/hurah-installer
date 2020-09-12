@@ -1,5 +1,5 @@
 <?php
-namespace Hi\Installer\Db;
+namespace Hi\Installer\Env;
 
 class EnvFile
 {

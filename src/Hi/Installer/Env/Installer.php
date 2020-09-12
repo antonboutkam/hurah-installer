@@ -1,5 +1,5 @@
 <?php
-namespace Hi\Installer\Db;
+namespace Hi\Installer\Env;
 
 use Composer\Installer\InstallerInterface;
 use Composer\Package\PackageInterface;

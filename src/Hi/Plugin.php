@@ -12,7 +12,7 @@ use Hi\Installer\Site\Installer as SiteInstaller;
 use Hi\Installer\Api\Installer as ApiInstaller;
 use Hi\Installer\Domain\Installer as DomainInstaller;
 use Hi\Installer\Core\Installer as CoreInstaller;
-use Hi\Installer\Db\Installer as DbInstaller;
+use Hi\Installer\Env\Installer as EnvInstaller;
 
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
@@ -45,7 +45,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
     function postInstall(Event $event)
     {
-        $oDbInstaller = new DbInstaller();
+        $oDbInstaller = new EnvInstaller();
         $oDbInstaller->install($event);
     }
     function postUpdate(Event $event)
