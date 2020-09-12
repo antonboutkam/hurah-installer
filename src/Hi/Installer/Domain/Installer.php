@@ -63,7 +63,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
                 unlink($sTo);
             }
 
-            $sRelativeInstallPath = $this->getRelativeInstallPath($package) . '/' . $sFrom;
+            $sRelativeInstallPath = $this->getRelativeInstallPath($package, $iDirsUp) . '/' . $sFrom;
             $oConsole->log('Symlinking ' . $iDirsUp .' ' . $sRelativeInstallPath . ' => ' . $sTo, 'Novum domain installer');
 
             symlink($sRelativeInstallPath, $sTo);
@@ -82,8 +82,9 @@ class Installer extends AbstractInstaller implements InstallerInterface
 
         $iDirsUp = 1;
         $sDomainDir = $sDomainsRoot . '/' . $sSystemId;
-        $oConsole->log('Creating public view ' . $this->getRelativeInstallPath($package, $iDirsUp). ' => ' . $sDomainDir, 'Novum domain installer');
-        symlink($this->getRelativeInstallPath($package, $iDirsUp), $sDomainDir);
+        $sInstallPath = $this->getRelativeInstallPath($package, $iDirsUp);
+        $oConsole->log('Creating public view ' . $sInstallPath . ' => ' . $sDomainDir, 'Novum domain installer');
+        symlink($sInstallPath, $sDomainDir);
 
     }
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
