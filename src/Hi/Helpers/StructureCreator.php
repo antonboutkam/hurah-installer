@@ -14,19 +14,19 @@ class StructureCreator
         if(!is_dir($oDirectoryStructure->getDomainDir()))
         {
             $oConsole->log('Creating domain directory ' . $oDirectoryStructure->getDomainDir(), 'Novum file structure');
-            mkdir($oDirectoryStructure->getDomainDir());
+            mkdir($oDirectoryStructure->getDomainDir(), 0777, true);
         }
 
         if(!is_dir($oDirectoryStructure->getSystemDir()))
         {
             $oConsole->log('Creating system directory ' . $oDirectoryStructure->getSystemDir(), 'Novum file structure');
-            mkdir($oDirectoryStructure->getSystemDir());
+            mkdir($oDirectoryStructure->getSystemDir(), 0777, true);
         }
 
         if(!is_dir($oDirectoryStructure->getPublicDir()))
         {
             $oConsole->log('Creating public directory ' . $oDirectoryStructure->getPublicDir(), 'Novum file structure');
-            mkdir($oDirectoryStructure->getPublicDir());
+            mkdir($oDirectoryStructure->getPublicDir(), 0777, true);
         }
     }
 }
