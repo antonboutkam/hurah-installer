@@ -13,8 +13,16 @@ class Console
         $this->io = $io;
     }
 
-    function log($sMessage, $sTopic = 'Novum installer')
+    function log($sMessage, $sTopic = 'Novum installer', $color = 'default')
     {
-        $this->io->write(" -  $sTopic <info>{$sMessage}</info>");
+        if($color === 'default')
+        {
+            $this->io->write(" -  $sTopic <info>{$sMessage}</info>");
+        }
+        else
+        {
+            $this->io->write(" -  $sTopic <fg=$color>{$sMessage}</>");
+        }
+
     }
 }

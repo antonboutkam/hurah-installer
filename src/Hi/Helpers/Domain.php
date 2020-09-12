@@ -7,21 +7,23 @@ use DirectoryIterator;
 
 final class Domain
 {
-    private $oIterator;
+    private $sPathname;
+    private $sSystemId;
     private $oDirectoryStructure;
     function __construct(DirectoryIterator $oDirectory)
     {
         $this->oDirectoryStructure = new DirectoryStructure();
-        $this->oIterator = $oDirectory;
+        $this->sPathname = $oDirectory->getPathname();
+        $this->sSystemId = $oDirectory->getFilename();
     }
 
-    function getDirectory():DirectoryIterator
+    function getPathname():string
     {
-        return $this->oIterator;
+        return $this->sPathname;
     }
     function getSystemID():string
     {
-        return $this->oIterator->getFilename();
+        return $this->sSystemId;
     }
     function getDataDir():string
     {

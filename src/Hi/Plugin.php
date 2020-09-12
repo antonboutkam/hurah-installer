@@ -1,11 +1,13 @@
 <?php
 namespace Hi;
 
+use Hi\Helpers\Console;
 use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
+use Hi\Helpers\ConsoleColor;
 use Hi\Installer\Site\Installer as SiteInstaller;
 use Hi\Installer\Api\Installer as ApiInstaller;
 use Hi\Installer\Domain\Installer as DomainInstaller;
@@ -18,7 +20,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         try
         {
-            $io->write("  - Activating <info>Novum component loaders</info>");
+            $oConsole = new Console($io);
+            $oConsole->log("Activating Novum installer", "Novum component loaders", ConsoleColor::blue);
             $oInstallationManager = $composer->getInstallationManager();
             $oSiteInstaller = new SiteInstaller($io, $composer);
             $oInstallationManager->addInstaller($oSiteInstaller);
@@ -42,8 +45,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
     function postInstall(Event $event)
     {
-        $oDbInstaller = new DbInstaller($io, $composer);
-        $oInstallationManager->addInstaller($oDbInstaller);
+        $oDbInstaller = new DbInstaller();
+        $oDbInstaller->install($event);
     }
     function postUpdate(Event $event)
     {

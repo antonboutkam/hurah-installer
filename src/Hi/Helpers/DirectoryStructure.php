@@ -6,6 +6,7 @@ use Composer\Command\ProhibitsCommand;
 
 class DirectoryStructure
 {
+    private $sSystemRoot;
     private $sSystemDir;
     private $sDataDir;
     private $sPublicDir;
@@ -14,17 +15,22 @@ class DirectoryStructure
 
     public function __construct()
     {
-        $sRootDir = dirname(__DIR__, 3);
-        $sStructureFile =  "$sRootDir/directory-structure.json";
+        $sPackageDir = dirname(__DIR__, 3);
+        $sStructureFile =  "$sPackageDir/directory-structure.json";
         $sStructureJson = file_get_contents($sStructureFile);
         $aStructure = json_decode($sStructureJson, true);
 
-        $this->sEnvDir = $aStructure['assets_dir'];
+        $this->sSystemRoot = getcwd();
+        $this->sEnvDir = $aStructure['env_dir'];
         $this->sSystemDir = $aStructure['system_dir'];
         $this->sDataDir = $aStructure['data_dir'];
         $this->sPublicDir = $aStructure['public_dir'];
         $this->sDomainDir = $aStructure['domain_dir'];
 
+    }
+    function getSystemRoot():string
+    {
+        return $this->sSystemRoot;
     }
     function getPublicSitePath(string $sSiteDir, int $iDirsUp = 0):string
     {
@@ -87,7 +93,7 @@ class DirectoryStructure
             'style' => $this->sSystemDir . '/admin_public_html/Custom/' . $sSystemId,
             'schema.xml' => $this->sSystemDir . '/build/database/' . $sSystemId . '/schema.xml',
             'api.xml' => $this->sSystemDir . '/build/database/' . $sSystemId . '/api.xml',
-            'database/init' => $this->sSystemDir . '/build/database/' . $sSystemId . '/crud_queries',
+            'database/init' => $this->sSystemDir . '/build/database/crud_queries',
             'config.php' => $this->sSystemDir . '/config/' . $sSystemId . '/config.php',
         ];
     }
