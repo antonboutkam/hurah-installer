@@ -17,7 +17,7 @@ class StructureCreator
             mkdir($oDirectoryStructure->getDomainDir());
         }
 
-        if(!is_dir($oDirectoryStructure->getSystemDir()))
+        if(!is_dir($oDirectoryStructure->getPublicDir()))
         {
             $oConsole->log('Creating system directory ' . $oDirectoryStructure->getSystemDir(), 'Novum file structure');
             mkdir($oDirectoryStructure->getPublicDir());
