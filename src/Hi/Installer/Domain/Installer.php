@@ -4,6 +4,7 @@ namespace Hi\Installer\Domain;
 use Composer\Package\PackageInterface;
 use Composer\Installer\InstallerInterface;
 use Composer\Repository\InstalledRepositoryInterface;
+use Hi\Helpers\ConsoleColor;
 use Hi\Helpers\StructureCreator;
 use Hi\Installer\AbstractInstaller;
 use Hi\Helpers\Console;
@@ -63,7 +64,14 @@ class Installer extends AbstractInstaller implements InstallerInterface
                 unlink($sTo);
             }
 
+            $sAbsoluteInstallPath = $this->getInstallPath($package);
             $sRelativeInstallPath = $this->getRelativeInstallPath($package, $iDirsUp) . '/' . $sFrom;
+
+            if(!file_exists($sAbsoluteInstallPath))
+            {
+                $oConsole->log("Skipping $sRelativeInstallPath, file does not exist", 'Novum domain installer', ConsoleColor::red);
+                continue;
+            }
             $oConsole->log('Symlinking ' . $iDirsUp .' ' . $sRelativeInstallPath . ' => ' . $sTo, 'Novum domain installer');
 
             symlink($sRelativeInstallPath, $sTo);
