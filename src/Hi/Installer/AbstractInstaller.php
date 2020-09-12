@@ -4,13 +4,14 @@ namespace Hi\Installer;
 
 use Composer\Installer\InstallerInterface;
 use Composer\Installer\LibraryInstaller;
+use Composer\Package\PackageInterface;
 use Hi\Helpers\Console;
 use function PHPUnit\Framework\returnArgument;
 
 abstract class AbstractInstaller extends LibraryInstaller implements InstallerInterface
 {
 
-    function getRelativeInstallPath(\Composer\Package\PackageInterface $package, int $iDirsUp = 0):string
+    function getRelativeInstallPath(PackageInterface $package, int $iDirsUp = 0):string
     {
 
         $oConsole = new Console($this->io);
@@ -37,7 +38,7 @@ abstract class AbstractInstaller extends LibraryInstaller implements InstallerIn
         return $sRelativeInstallPath;
     }
 
-    function getInstallPath(\Composer\Package\PackageInterface $package):string
+    function getInstallPath(PackageInterface $package):string
     {
         return parent::getInstallPath($package);
     }

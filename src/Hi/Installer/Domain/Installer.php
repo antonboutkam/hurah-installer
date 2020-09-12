@@ -57,14 +57,14 @@ class Installer extends AbstractInstaller implements InstallerInterface
 
             $iDirsUp = substr_count($sTo, DIRECTORY_SEPARATOR) + 2; // + ./vendor/novum
 
-            $oConsole->log('Symlinking ' . $iDirsUp .' ' . $this->getRelativeInstallPath($package, $iDirsUp) . '/' . $sFrom . ' => ' . $sTo, 'Novum domain installer');
+            $oConsole->log('Symlinking ' . $iDirsUp .' ' . $this->getRelativeInstallPath($package) . '/' . $sFrom . ' => ' . $sTo, 'Novum domain installer');
 
             if(file_exists($sTo))
             {
                 unlink($sTo);
             }
 
-            symlink($this->getRelativeInstallPath($package, $iDirsUp) . '/' . $sFrom, $sTo);
+            symlink($this->getRelativeInstallPath($package) . '/' . $sFrom, $sTo);
 
         }
 
