@@ -32,7 +32,7 @@ abstract class AbstractInstaller extends LibraryInstaller implements InstallerIn
         $oConsole->log("Absolute install path  $sAbsoluteInstallPath");
 
         $sRelativeInstallPath = "{$sPrepend}vendor/$sPackageVendorDir/$sPackageDir";
-        $oConsole->log(" --> Relative install path  $sRelativeInstallPath");
+        $oConsole->log("Relative install path  $sRelativeInstallPath");
 
         return $sRelativeInstallPath;
     }
