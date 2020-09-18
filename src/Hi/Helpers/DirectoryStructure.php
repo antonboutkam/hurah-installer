@@ -32,8 +32,12 @@ class DirectoryStructure
     {
         return $this->sSystemRoot;
     }
-    function getPublicSitePath(string $sSiteDir, int $iDirsUp = 0):string
+    function getPublicSitePath(string $sSiteDir, int $iDirsUp = null):string
     {
+        if(!$iDirsUp)
+        {
+            $iDirsUp = 0;
+        }
         return str_repeat('../', $iDirsUp) . $this->getPublicDir() . '/' . $sSiteDir;
     }
     function getSystemSitePath(string $sSiteDir):string
@@ -67,6 +71,10 @@ class DirectoryStructure
      */
     function getDomainCollection():array
     {
+        if(!file_exists($this->getDomainDir()))
+        {
+            return [];
+        }
         $oDomainIterator = new \DirectoryIterator($this->getDomainDir());
         $aOut = [];
         foreach ($oDomainIterator as $oDomainItem)
