@@ -77,7 +77,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
             symlink($sRelativeInstallPath, $sTo);
         }
 
-        $sDestMigrationScript = "{$oDirectoryStructure->getSystemDir()}/build/{$sSystemId}/migrate.sh";
+        $sDestMigrationScript = "{$oDirectoryStructure->getSystemDir()}/build/database/{$sSystemId}/migrate.sh";
         if(realpath($sDestMigrationScript))
         {
             unlink($sDestMigrationScript);
