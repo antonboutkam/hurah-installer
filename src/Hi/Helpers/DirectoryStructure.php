@@ -102,8 +102,7 @@ class DirectoryStructure
             'schema.xml' => $this->sSystemDir . '/build/database/' . $sSystemId . '/schema.xml',
             'api.xml' => $this->sSystemDir . '/build/database/' . $sSystemId . '/api.xml',
             'database/init' => $this->sSystemDir . '/build/database/' . $sSystemId . '/crud_queries',
-            'config.php' => $this->sSystemDir . '/config/' . $sSystemId . '/config.php',
-            $this->sSystemDir . '/build/_skel/migrate.sh' => $this->sSystemDir . '/build/database/' . $sSystemId . '/migrate.sh',
+            'config.php' => $this->sSystemDir . '/config/' . $sSystemId . '/config.php'
         ];
     }
 

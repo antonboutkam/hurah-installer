@@ -75,7 +75,6 @@ class Installer extends AbstractInstaller implements InstallerInterface
             $oConsole->log('Symlinking ' . $iDirsUp .' ' . $sRelativeInstallPath . ' => ' . $sTo, 'Novum domain installer');
 
             symlink($sRelativeInstallPath, $sTo);
-
         }
 
         /**
