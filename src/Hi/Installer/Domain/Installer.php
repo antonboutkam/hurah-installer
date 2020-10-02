@@ -84,7 +84,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
         }
 
         $oConsole->log("Symlinking ---> ../../build/_skel/migrate.sh ----> $sDestMigrationScript");
-        symlink( "../../build/_skel/migrate.sh", $sDestMigrationScript);
+        symlink( "../../_skel/migrate.sh", $sDestMigrationScript);
 
 
         /**
