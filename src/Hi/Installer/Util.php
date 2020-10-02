@@ -6,7 +6,7 @@ final class Util
 
     public static function removeSymlink($path)
     {
-        if(!file_exists($path))
+        if(!realpath($path))
         {
             return false;
         }
