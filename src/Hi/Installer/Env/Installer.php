@@ -17,25 +17,10 @@ class Installer
     public function install(Event $oEvent) {
         $oConsole = new Console($oEvent->getIO());
         $oDirectoryStructure = new DirectoryStructure();
-        $oConsole->log("Creating env directory", self::logTopic);
-        $this->createEnvRoot($oDirectoryStructure, $oConsole);
         $oConsole->log("Creating domain env files", self::logTopic);
         $this->createEnvFiles($oDirectoryStructure, $oConsole);
     }
-    function createEnvRoot(DirectoryStructure $oDirectoryStructure, Console $oConsole)
-    {
-        $bEnvDirExists = is_dir($oDirectoryStructure->getEnvDir());
 
-        if(!$bEnvDirExists)
-        {
-            $oConsole->log("Creating environment directory: " . $oDirectoryStructure->getEnvDir(), self::logTopic);
-            mkdir($oDirectoryStructure->getEnvDir());
-        }
-        else
-        {
-            $oConsole->log("No need to create environment directory as it already exists: " . $oDirectoryStructure->getEnvDir(), self::logTopic);
-        }
-    }
     function createEnvFiles(DirectoryStructure $oDirectoryStructure, Console $oConsole)
     {
         foreach ($oDirectoryStructure->getDomainCollection() as $oDomain)
