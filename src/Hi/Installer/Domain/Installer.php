@@ -56,7 +56,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
                 $oConsole->log('Creating directory ' . $sParentDir, 'Novum domain installer');
             }
 
-            $iDirsUp = substr_count($sTo, DIRECTORY_SEPARATOR); // + ./vendor/novum
+            $iDirsUp = substr_count($sTo, DIRECTORY_SEPARATOR) +2 ; // + ./vendor/novum
 
 
             if(file_exists($sTo))
