@@ -20,21 +20,16 @@ class Installer extends AbstractInstaller implements InstallerInterface
      */
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
-        $oConsole = new Console($this->io);
-
         /**
          * Installing all files on the normal location inside vendor
          */
         parent::install($repo, $package);
 
-        $sConfigPath = $this->getInstallPath($package) . DIRECTORY_SEPARATOR . 'config.php';
-        $config = include $sConfigPath;
+        $oConsole = new Console($this->io);
+        $aDomainConfig = $this->getInstallPath($package) . DIRECTORY_SEPARATOR  . 'config.php';
 
-        print_r($config);
-        exit();
-
-        $sSystemId = str_replace('/', '.', str_replace('domain-', '', $package->getName()));
-        $oConsole->log("Generated system id: $sSystemId", 'Novum domain installer');
+        $sSystemId = $aDomainConfig['CUSTOM_FOLDER'];
+        $oConsole->log("System id: $sSystemId", 'Novum domain installer');
 
         $oConsole = new Console($this->io);
         /**
