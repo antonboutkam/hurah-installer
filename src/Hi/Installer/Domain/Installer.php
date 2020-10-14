@@ -73,7 +73,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
                 continue;
             }
 
-            $sSymlinkAbsoluteSource $sAbsoluteInstallPath . DIRECTORY_SEPARATOR . $sFrom;
+            $sSymlinkAbsoluteSource = $sAbsoluteInstallPath . DIRECTORY_SEPARATOR . $sFrom;
             if(!is_dir($sSymlinkAbsoluteSource) && !file_exists($sSymlinkAbsoluteSource))
             {
                 $oConsole->log("Creating $sSymlinkAbsoluteSource directory", ConsoleColor::red);
