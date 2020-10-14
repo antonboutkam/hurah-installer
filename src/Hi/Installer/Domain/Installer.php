@@ -65,15 +65,22 @@ class Installer extends AbstractInstaller implements InstallerInterface
             }
 
             $sAbsoluteInstallPath = $this->getInstallPath($package);
-            $sRelativeInstallPath = $this->getRelativeInstallPath($package, $iDirsUp) . '/' . $sFrom;
+            $sRelativeInstallPath = $this->getRelativeInstallPath($package, $iDirsUp) . DIRECTORY_SEPARATOR . $sFrom;
 
             if(!file_exists($sAbsoluteInstallPath))
             {
                 $oConsole->log("Skipping $sRelativeInstallPath, file does not exist", 'Novum domain installer', ConsoleColor::red);
                 continue;
             }
-            $oConsole->log('Symlinking ' . $iDirsUp .' ' . $sRelativeInstallPath . ' => ' . $sTo, 'Novum domain installer');
 
+            $sSymlinkAbsoluteSource $sAbsoluteInstallPath . DIRECTORY_SEPARATOR . $sFrom;
+            if(!is_dir($sSymlinkAbsoluteSource) && !file_exists($sSymlinkAbsoluteSource))
+            {
+                $oConsole->log("Creating $sSymlinkAbsoluteSource directory", ConsoleColor::red);
+                mkdir($sSymlinkAbsoluteSource,0777, true);
+            }
+
+            $oConsole->log('Symlinking ' . $iDirsUp .' ' . $sRelativeInstallPath . ' => ' . $sTo, 'Novum domain installer');
             symlink($sRelativeInstallPath, $sTo);
         }
 
