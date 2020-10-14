@@ -61,6 +61,12 @@ class Installer extends AbstractInstaller implements InstallerInterface
         $sPackageDir = basename($sAbsoluteInstallPath); //bv api-belastingdiest
         $sRelativeVirtualInstallPath = "../../$sPackageDir";
         $oConsole->log("Symlinking $sRelativeVirtualInstallPath" . ' => ' . $oDirectoryStructure->getSystemSitePath($sSiteDir), $this->installerName);
+
+        if(is_link($oDirectoryStructure->getSystemSitePath($sSiteDir)))
+        {
+            unlink($oDirectoryStructure->getSystemSitePath($sSiteDir));
+        }
+
         symlink($sRelativeVirtualInstallPath, $oDirectoryStructure->getSystemSitePath($sSiteDir));
 
 
