@@ -12,6 +12,7 @@ class DirectoryStructure
     private $sPublicDir;
     private $sDomainDir;
     private $sEnvDir;
+    private $sLogDir;
 
     public function __construct()
     {
@@ -26,7 +27,7 @@ class DirectoryStructure
         $this->sDataDir = $aStructure['data_dir'];
         $this->sPublicDir = $aStructure['public_dir'];
         $this->sDomainDir = $aStructure['domain_dir'];
-
+        $this->sLogDir = $aStructure['log_dir'];
     }
     function getSystemRoot():string
     {
@@ -51,6 +52,10 @@ class DirectoryStructure
     function getDataDir():string
     {
         return $this->sDataDir;
+    }
+    function getLogDir():string
+    {
+        return $this->sLogDir;
     }
     function getDomainDir():string
     {

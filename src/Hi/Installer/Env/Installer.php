@@ -74,7 +74,11 @@ class Installer
             symlink($sRelativePath . $sEnvFileUserPerspective, $sEnvFileSystemPerspective);
         }
 
-        $oDirectoryStructure->getLogDir();
+        if(!is_dir($oDirectoryStructure->getLogDir()))
+        {
+            $oConsole->log("Creating logdir {$oDirectoryStructure->getLogDir()}", self::logTopic);
+            mkdir($oDirectoryStructure->getLogDir(), 0777, true);
+        }
 
     }
 

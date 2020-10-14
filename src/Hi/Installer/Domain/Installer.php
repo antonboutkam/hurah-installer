@@ -22,12 +22,20 @@ class Installer extends AbstractInstaller implements InstallerInterface
     {
         $oConsole = new Console($this->io);
 
-        $sSystemId = str_replace('/', '.', str_replace('domain-', '', $package->getName()));
-        $oConsole->log("Generated system id: $sSystemId", 'Novum domain installer');
         /**
          * Installing all files on the normal location inside vendor
          */
         parent::install($repo, $package);
+
+        $sConfigPath = $this->getInstallPath($package) . DIRECTORY_SEPARATOR . 'config.php';
+        $config = include $sConfigPath;
+
+        print_r($config);
+        exit();
+
+        $sSystemId = str_replace('/', '.', str_replace('domain-', '', $package->getName()));
+        $oConsole->log("Generated system id: $sSystemId", 'Novum domain installer');
+
         $oConsole = new Console($this->io);
         /**
          * Generating a namespace
