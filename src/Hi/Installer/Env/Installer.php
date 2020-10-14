@@ -47,7 +47,7 @@ class Installer
                 $oEnvFile = new EnvFile(
                     $oDomain->getSystemID(),
                     $oDomain->getSystemRoot(),
-            $oDomain->getSystemRoot() . DIRECTORY_SEPARATOR . $oDomain->getDataDir(),
+                    $oDomain->getSystemRoot() . DIRECTORY_SEPARATOR . $oDomain->getDataDir(),
                     $sDbIp,
                     $oDomain->makeDbUser(),
                     $oDomain->makeDbPass());
@@ -73,6 +73,9 @@ class Installer
             Util::removeSymlink($sEnvFileSystemPerspective);
             symlink($sRelativePath . $sEnvFileUserPerspective, $sEnvFileSystemPerspective);
         }
+
+        $oDirectoryStructure->getLogDir();
+
     }
 
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
