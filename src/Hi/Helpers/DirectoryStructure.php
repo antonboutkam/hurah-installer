@@ -122,14 +122,14 @@ class DirectoryStructure
     public function getDomainSystemSymlinkMapping(string $sSystemId, string $sCustomNamespace):array
     {
         return [
-            new Mapping($sSystemId, 'admin_modules', '/admin_modules/Custom/' . $sCustomNamespace, Mapping::DIRECTORY),
-            new Mapping($sSystemId, 'classes/Crud', '/classes/Crud/Custom/' . $sCustomNamespace, Mapping::DIRECTORY),
-            new Mapping($sSystemId, 'classes/Model', '/classes/Model/Custom/' . $sCustomNamespace, Mapping::DIRECTORY),
-            new Mapping($sSystemId, 'style', '/admin_public_html/Custom/' . $sSystemId, Mapping::DIRECTORY),
-            new Mapping($sSystemId, 'schema.xml', '/build/database/' . $sSystemId . '/schema.xml', Mapping::FILE),
-            new Mapping($sSystemId, 'api.xml', '/build/database/' . $sSystemId . '/api.xml', Mapping::FILE),
-            new Mapping($sSystemId, 'database/init', '/build/database/' . $sSystemId . '/crud_queries', Mapping::DIRECTORY),
-            new Mapping($sSystemId, 'config.php', '/config/' . $sSystemId . '/config.php', Mapping::FILE)
+            new Mapping($sSystemId, 'admin_modules', 'admin_modules/Custom/' . $sCustomNamespace, Mapping::DIRECTORY),
+            new Mapping($sSystemId, 'classes/Crud', 'classes/Crud/Custom/' . $sCustomNamespace, Mapping::DIRECTORY),
+            new Mapping($sSystemId, 'classes/Model', 'classes/Model/Custom/' . $sCustomNamespace, Mapping::DIRECTORY),
+            new Mapping($sSystemId, 'style', 'admin_public_html/Custom/' . $sSystemId, Mapping::DIRECTORY),
+            new Mapping($sSystemId, 'schema.xml', 'build/database/' . $sSystemId . '/schema.xml', Mapping::FILE),
+            new Mapping($sSystemId, 'api.xml', 'build/database/' . $sSystemId . '/api.xml', Mapping::FILE),
+            new Mapping($sSystemId, 'database/init', 'build/database/' . $sSystemId . '/crud_queries', Mapping::DIRECTORY),
+            new Mapping($sSystemId, 'config.php', 'config/' . $sSystemId . '/config.php', Mapping::FILE)
         ];
     }
 
