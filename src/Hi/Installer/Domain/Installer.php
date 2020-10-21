@@ -45,80 +45,69 @@ class Installer extends AbstractInstaller implements InstallerInterface
         $oDirectoryStructure = new DirectoryStructure();
         StructureCreator::create($oDirectoryStructure, $this->io);
 
+        /**
+         * For every file there will be two mappings.
+         *
+         * 1. To the domain directory as seen from the root.
+         * 2. Into the system directory to create the actual structure that the webserver loads.
+         */
         $aMapping = $oDirectoryStructure->getDomainSystemSymlinkMapping($sSystemId, $sNamespace);
 
-        foreach ($aMapping as $sFrom => $sTo)
+        foreach ($aMapping as $oMapping)
         {
-            $sParentDir = dirname($sTo);
-            if(!is_dir($sParentDir))
+
+            if($oMapping->sourceMissing() && $oMapping->createIfNotExists())
             {
-                mkdir($sParentDir, 0777, true);
-                $oConsole->log('Creating directory ' . $sParentDir, 'Novum domain installer');
+                $oConsole->log('Source item missing, now creating <info>' . $oMapping->getSourcePath() . '</info>', 'Novum domain installer');
+                $oMapping->createSource();
+            }
+            $sAbsoluteDestinationParentDir = dirname($oMapping->getDestPath());
+            if(!is_dir($sAbsoluteDestinationParentDir))
+            {
+                $oConsole->log("Creating destination parent directory <info>{$sAbsoluteDestinationParentDir}</info>",  'Novum domain installer');
+                mkdir($sAbsoluteDestinationParentDir, 0777, true);
             }
 
-            $iDirsUp = substr_count($sTo, DIRECTORY_SEPARATOR) +2 ; // + ./vendor/novum
-
-
-            if(file_exists($sTo))
+            if(file_exists($oMapping->getDestPath() || is_link($oMapping->getDestPath())))
             {
-                unlink($sTo);
+                $oConsole->log("Unlinking current destination <info>{$oMapping->getDestPath()}</info>",  'Novum domain installer');
+                unlink($oMapping->getDestPath());
             }
 
-            $sAbsoluteInstallPath = $this->getInstallPath($package);
-            $sRelativeInstallPath = $this->getRelativeInstallPath($package, $iDirsUp) . DIRECTORY_SEPARATOR . $sFrom;
-
-            if(!file_exists($sAbsoluteInstallPath))
-            {
-                $oConsole->log("Skipping $sRelativeInstallPath, file does not exist", 'Novum domain installer', ConsoleColor::red);
-                continue;
-            }
-
-            $sSymlinkAbsoluteSource = $sAbsoluteInstallPath . DIRECTORY_SEPARATOR . $sFrom;
-            if(!is_dir($sSymlinkAbsoluteSource) && !file_exists($sSymlinkAbsoluteSource))
-            {
-                $oConsole->log("Creating $sSymlinkAbsoluteSource directory", ConsoleColor::red);
-                mkdir($sSymlinkAbsoluteSource,0777, true);
-            }
-
-            if(file_exists($sRelativeInstallPath))
-            {
-                $oConsole->log('Symlinking ' . $iDirsUp .' ' . $sRelativeInstallPath . ' => ' . $sTo, 'Novum domain installer');
-                symlink($sRelativeInstallPath, $sTo);
-            }
-            else
-            {
-                $oConsole->log('<error>symlink ' . $sRelativeInstallPath . ' to ' . $sTo . ' sourcefile does not exist.', 'Novum domain installer</error>');
-            }
-
+            $oConsole->log("Creating symlink  <info>{$oMapping->getSourcePath()}</info> --> <info>{$oMapping->getDestPath()}</info>",  'Novum domain installer');
+            symlink($oMapping->getSourcePath(), $oMapping->getDestPath());
         }
 
-        $sDestMigrationScript = "{$oDirectoryStructure->getSystemDir()}/build/database/{$sSystemId}/migrate.sh";
+        $this->linkInMigrateSh($sSystemId);
+        $this->makePublicDomainDir($sSystemId, $package);
+    }
+    private function linkInMigrateSh(string $sSystemId){
+        $oDirectoryStructure = new DirectoryStructure();
+        $sDestMigrationScript = "{$oDirectoryStructure->getSystemDir(true)}/build/database/{$sSystemId}/migrate.sh";
+        $oConsole->log("Adding migrate.sh script to $sDestMigrationScript",  'Novum domain installer');
         if(realpath($sDestMigrationScript))
         {
             unlink($sDestMigrationScript);
         }
 
         $oConsole->log("Symlinking ---> ../../build/_skel/migrate.sh ----> $sDestMigrationScript");
-        symlink( "../../_skel/migrate.sh", $sDestMigrationScript);
+        symlink( "{$oDirectoryStructure->getSystemDir(true)}/build/_skel/migrate.sh", $sDestMigrationScript);
+    }
 
-
-        /**
-         * Create public symlink
-         */
-        $sDomainsRoot = $oDirectoryStructure->getDomainDir();
+    private function makePublicDomainDir(string $sSystemId, PackageInterface $package)
+    {
+        $oDirectoryStructure = new DirectoryStructure();
+        $sDomainsRoot = $oDirectoryStructure->getDomainDir(true);
 
         if(!is_dir($sDomainsRoot))
         {
             mkdir($sDomainsRoot, 0777, true);
         }
-
-        $iDirsUp = 1;
         $sDomainDir = $sDomainsRoot . '/' . $sSystemId;
-        $sInstallPath = $this->getRelativeInstallPath($package, $iDirsUp);
-        $oConsole->log('Creating public view ' . $sInstallPath . ' => ' . $sDomainDir, 'Novum domain installer');
-        symlink($sInstallPath, $sDomainDir);
-
+        $oConsole->log('Creating public view ' . $this->getInstallPath($package) . ' => ' . $sDomainDir, 'Novum domain installer');
+        symlink($this->getInstallPath($package), $sDomainDir);
     }
+
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
 

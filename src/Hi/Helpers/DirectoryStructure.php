@@ -4,6 +4,7 @@ namespace Hi\Helpers;
 
 use Composer\Command\ProhibitsCommand;
 use Core\Environment;
+use Hi\Installer\Domain\Mapping;
 
 class DirectoryStructure
 {
@@ -64,8 +65,12 @@ class DirectoryStructure
     {
         return $this->sLogDir;
     }
-    function getDomainDir():string
+    function getDomainDir(bool $bAbsolute = false):string
     {
+        if($bAbsolute)
+        {
+            return $this->getSystemRoot() . DIRECTORY_SEPARATOR . $this->sDomainDir;
+        }
         return $this->sDomainDir;
     }
 
@@ -108,17 +113,23 @@ class DirectoryStructure
         }
         return $aOut;
     }
+
+    /**
+     * @param string $sSystemId
+     * @param string $sCustomNamespace
+     * @return Mapping[]
+     */
     public function getDomainSystemSymlinkMapping(string $sSystemId, string $sCustomNamespace):array
     {
         return [
-            'admin_modules' => $this->sSystemDir . '/admin_modules/Custom/' . $sCustomNamespace,
-            'classes/Crud' => $this->sSystemDir . '/classes/Crud/Custom/' . $sCustomNamespace,
-            'classes/Model' => $this->sSystemDir . '/classes/Model/Custom/' . $sCustomNamespace,
-            'style' => $this->sSystemDir . '/admin_public_html/Custom/' . $sSystemId,
-            'schema.xml' => $this->sSystemDir . '/build/database/' . $sSystemId . '/schema.xml',
-            'api.xml' => $this->sSystemDir . '/build/database/' . $sSystemId . '/api.xml',
-            'database/init' => $this->sSystemDir . '/build/database/' . $sSystemId . '/crud_queries',
-            'config.php' => $this->sSystemDir . '/config/' . $sSystemId . '/config.php'
+            new Mapping($sSystemId, 'admin_modules', '/admin_modules/Custom/' . $sCustomNamespace, Mapping::DIRECTORY),
+            new Mapping($sSystemId, 'classes/Crud', '/classes/Crud/Custom/' . $sCustomNamespace, Mapping::DIRECTORY),
+            new Mapping($sSystemId, 'classes/Model', '/classes/Model/Custom/' . $sCustomNamespace, Mapping::DIRECTORY),
+            new Mapping($sSystemId, 'style', '/admin_public_html/Custom/' . $sSystemId, Mapping::DIRECTORY),
+            new Mapping($sSystemId, 'schema.xml', '/build/database/' . $sSystemId . '/schema.xml', Mapping::FILE),
+            new Mapping($sSystemId, 'api.xml', '/build/database/' . $sSystemId . '/api.xml', Mapping::FILE),
+            new Mapping($sSystemId, 'database/init', '/build/database/' . $sSystemId . '/crud_queries', Mapping::DIRECTORY),
+            new Mapping($sSystemId, 'config.php', '/config/' . $sSystemId . '/config.php', Mapping::FILE)
         ];
     }
 
