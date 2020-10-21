@@ -27,11 +27,11 @@ class Mapping
 
     function sourceMissing():bool
     {
-        return file_exists($this->getSourceDir());
+        return file_exists($this->getSourcePath());
     }
     function createSource()
     {
-        $sParent = dirname($this->getSourceDir());
+        $sParent = dirname($this->getSourcePath());
 
         if(!is_dir($sParent))
         {
@@ -40,16 +40,16 @@ class Mapping
 
         if($this->getType() === self::FILE)
         {
-            touch($this->getSourceDir());
+            touch($this->getSourcePath());
         }
         else
         {
-            mkdir($this->getSourceDir());
+            mkdir($this->getSourcePath());
         }
     }
     function destinationDirExists():bool
     {
-        return file_exists($this->getSourceDir());
+        return file_exists($this->getSourcePath());
     }
 
     function getSourcePath(bool $bAbsolute = true):string
