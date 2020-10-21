@@ -29,11 +29,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $oInstallationManager->addInstaller($oSiteInstaller);
 
             $oConsole->log("Installing api's", "Novum component loaders", ConsoleColor::blue);
-            $oDomainInstaller = new ApiInstaller($io, $composer);
-            $oInstallationManager->addInstaller($oDomainInstaller);
+            $oApiInstaller = new ApiInstaller($io, $composer);
+            $oInstallationManager->addInstaller($oApiInstaller);
 
             $oConsole->log("Installing domains", "Novum component loaders", ConsoleColor::blue);
-            $oDomainInstaller = new ApiInstaller($io, $composer);
+            $oDomainInstaller = new DomainInstaller($io, $composer);
             $oInstallationManager->addInstaller($oDomainInstaller);
 
             $oConsole->log("Installing core system", "Novum component loaders", ConsoleColor::blue);
