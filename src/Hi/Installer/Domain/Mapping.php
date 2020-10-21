@@ -16,7 +16,7 @@ class Mapping
     private bool $bCreateSourceIfNotExists;
     private DirectoryStructure $oDirectoryStructure;
 
-    function __constructor(string $sSystemId, string $sRelativeSource, string $sRelativeDest, string $sType, bool $bCreateSourceIfNotExists = true)
+    function __construct(string $sSystemId, string $sRelativeSource, string $sRelativeDest, string $sType, bool $bCreateSourceIfNotExists = true)
     {
         $this->sRelativeSource = $sRelativeSource;
         $this->sRelativeDest = $sRelativeDest;
