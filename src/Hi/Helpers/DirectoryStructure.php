@@ -3,6 +3,7 @@
 namespace Hi\Helpers;
 
 use Composer\Command\ProhibitsCommand;
+use Core\Environment;
 
 class DirectoryStructure
 {
@@ -13,6 +14,7 @@ class DirectoryStructure
     private $sDomainDir;
     private $sEnvDir;
     private $sLogDir;
+    private $sSchemaXsdDir;
 
     public function __construct()
     {
@@ -21,13 +23,14 @@ class DirectoryStructure
         $sStructureJson = file_get_contents($sStructureFile);
         $aStructure = json_decode($sStructureJson, true);
 
-        $this->sSystemRoot = getcwd();
+        $this->sSystemRoot = $_SERVER['SYSTEM_ROOT'];
         $this->sEnvDir = $aStructure['env_dir'];
         $this->sSystemDir = $aStructure['system_dir'];
         $this->sDataDir = $aStructure['data_dir'];
         $this->sPublicDir = $aStructure['public_dir'];
         $this->sDomainDir = $aStructure['domain_dir'];
         $this->sLogDir = $aStructure['log_dir'];
+        $this->sSchemaXsdDir = $aStructure['schema_xsd_dir'];
     }
     function getSystemRoot():string
     {
@@ -44,6 +47,10 @@ class DirectoryStructure
     function getSystemSitePath(string $sSiteDir):string
     {
         return $this->getSystemDir() . '/public_html/' . $sSiteDir;
+    }
+    function getSchemaXsdDir():string
+    {
+        return $this->sSchemaXsdDir;
     }
     function getPublicDir():string
     {
@@ -62,8 +69,12 @@ class DirectoryStructure
         return $this->sDomainDir;
     }
 
-    function getSystemDir():string
+    function getSystemDir(bool $bAbsolute = false):string
     {
+        if($bAbsolute)
+        {
+            return $this->getSystemRoot() . DIRECTORY_SEPARATOR . $this->sSystemDir;
+        }
         return $this->sSystemDir;
     }
     function getEnvDir():string

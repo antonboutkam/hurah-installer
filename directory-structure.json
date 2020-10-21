@@ -1,9 +1,10 @@
 {
-	"system_dir" 	: ".system",
-	"public_dir" 	: "public",
-	"domain_dir" 	: "domain",
-	"env_dir" 		: "env",
-	"assets_dir" 	: "assets",
-	"data_dir" 		: "data",
-	"log_dir" 		: "data/log"
+	"system_dir" 		: ".system",
+	"public_dir" 		: "public",
+	"domain_dir" 		: "domain",
+	"env_dir" 			: "env",
+	"assets_dir" 		: "assets",
+	"data_dir" 			: "data",
+	"schema_xsd_dir" 	: "build/schema",
+	"log_dir" 			: "data/log"
 }

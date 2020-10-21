@@ -80,8 +80,16 @@ class Installer extends AbstractInstaller implements InstallerInterface
                 mkdir($sSymlinkAbsoluteSource,0777, true);
             }
 
-            $oConsole->log('Symlinking ' . $iDirsUp .' ' . $sRelativeInstallPath . ' => ' . $sTo, 'Novum domain installer');
-            symlink($sRelativeInstallPath, $sTo);
+            if(file_exists($sRelativeInstallPath))
+            {
+                $oConsole->log('Symlinking ' . $iDirsUp .' ' . $sRelativeInstallPath . ' => ' . $sTo, 'Novum domain installer');
+                symlink($sRelativeInstallPath, $sTo);
+            }
+            else
+            {
+                $oConsole->log('<error>symlink ' . $sRelativeInstallPath . ' to ' . $sTo . ' sourcefile does not exist.', 'Novum domain installer</error>');
+            }
+
         }
 
         $sDestMigrationScript = "{$oDirectoryStructure->getSystemDir()}/build/database/{$sSystemId}/migrate.sh";
