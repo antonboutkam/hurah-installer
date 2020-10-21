@@ -28,23 +28,23 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $oSiteInstaller = new SiteInstaller($io, $composer);
             $oInstallationManager->addInstaller($oSiteInstaller);
 
-            $oConsole->log("Installing api's", "Novum component loaders", ConsoleColor::blue);$oDomainInstaller = new ApiInstaller($io, $composer);
+            $oConsole->log("Installing api's", "Novum component loaders", ConsoleColor::blue);
+            $oDomainInstaller = new ApiInstaller($io, $composer);
             $oInstallationManager->addInstaller($oDomainInstaller);
 
-            $oConsole->log("Installing domains", "Novum component loaders", ConsoleColor::blue);$oDomainInstaller = new ApiInstaller($io, $composer);
-            $oApiInstaller = new DomainInstaller($io, $composer);
-            $oInstallationManager->addInstaller($oApiInstaller);
+            $oConsole->log("Installing domains", "Novum component loaders", ConsoleColor::blue);
+            $oDomainInstaller = new ApiInstaller($io, $composer);
+            $oInstallationManager->addInstaller($oDomainInstaller);
 
-            $oConsole->log("Installing core system", "Novum component loaders", ConsoleColor::blue);$oDomainInstaller = new ApiInstaller($io, $composer);
-            $oApiInstaller = new CoreInstaller($io, $composer);
-            $oInstallationManager->addInstaller($oApiInstaller);
+            $oConsole->log("Installing core system", "Novum component loaders", ConsoleColor::blue);
+            $oCoreInstaller = new CoreInstaller($io, $composer);
+            $oInstallationManager->addInstaller($oCoreInstaller);
         }
         catch(\Exception $e)
         {
             echo $e->getMessage() . PHP_EOL;
             echo $e->getTraceAsString() . PHP_EOL;
         }
-
     }
 
     function postInstall(Event $event)
@@ -54,6 +54,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     }
     function postUpdate(Event $event)
     {
+        // $event->getIO();
+        // $event->getComposer()
+
         $this->postInstall($event);
     }
     public static function getSubscribedEvents()
