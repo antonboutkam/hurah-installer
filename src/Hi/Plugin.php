@@ -23,15 +23,19 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $oConsole = new Console($io);
             $oConsole->log("Activating Novum installer", "Novum component loaders", ConsoleColor::blue);
             $oInstallationManager = $composer->getInstallationManager();
+
+            $oConsole->log("Installing sites", "Novum component loaders", ConsoleColor::blue);
             $oSiteInstaller = new SiteInstaller($io, $composer);
             $oInstallationManager->addInstaller($oSiteInstaller);
 
-            $oDomainInstaller = new ApiInstaller($io, $composer);
+            $oConsole->log("Installing api's", "Novum component loaders", ConsoleColor::blue);$oDomainInstaller = new ApiInstaller($io, $composer);
             $oInstallationManager->addInstaller($oDomainInstaller);
 
+            $oConsole->log("Installing domains", "Novum component loaders", ConsoleColor::blue);$oDomainInstaller = new ApiInstaller($io, $composer);
             $oApiInstaller = new DomainInstaller($io, $composer);
             $oInstallationManager->addInstaller($oApiInstaller);
 
+            $oConsole->log("Installing core system", "Novum component loaders", ConsoleColor::blue);$oDomainInstaller = new ApiInstaller($io, $composer);
             $oApiInstaller = new CoreInstaller($io, $composer);
             $oInstallationManager->addInstaller($oApiInstaller);
         }
