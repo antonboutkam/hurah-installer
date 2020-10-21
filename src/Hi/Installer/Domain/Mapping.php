@@ -18,6 +18,7 @@ class Mapping
 
     function __construct(string $sSystemId, string $sRelativeSource, string $sRelativeDest, string $sType, bool $bCreateSourceIfNotExists = true)
     {
+        $this->sSystemId = $sSystemId;
         $this->sRelativeSource = $sRelativeSource;
         $this->sRelativeDest = $sRelativeDest;
         $this->sType = $sType;
