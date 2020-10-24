@@ -45,7 +45,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
         $oDirectoryStructure = new DirectoryStructure();
         StructureCreator::create($oDirectoryStructure, $this->io);
 
-        $oConsole->log('Creating public view ' . $this->getInstallPath($package) . ' => ' . $sDomainDir, 'Novum domain installer');
+        $oConsole->log('Creating public domain view');
         $this->makePublicDomainDir($sSystemId, $package);
 
         /**
