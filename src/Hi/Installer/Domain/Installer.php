@@ -44,6 +44,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
         $oConsole->log("Setting up base file structure", 'Novum domain installer');
         $oDirectoryStructure = new DirectoryStructure();
         StructureCreator::create($oDirectoryStructure, $this->io);
+        $this->makePublicDomainDir($sSystemId, $package);
 
         /**
          * For every file there will be two mappings.
@@ -79,7 +80,6 @@ class Installer extends AbstractInstaller implements InstallerInterface
         }
 
         $this->linkInMigrateSh($sSystemId);
-        $this->makePublicDomainDir($sSystemId, $package);
     }
     private function linkInMigrateSh(string $sSystemId){
         $oDirectoryStructure = new DirectoryStructure();
