@@ -75,22 +75,22 @@ class Installer extends AbstractInstaller implements InstallerInterface
          */
         $aSymlinkMapping = $oDirectoryStructure->getDomainSystemSymlinkMapping($sSystemId, $sNamespace);
 
-        foreach ($aMapping as $oMapping)
+        foreach ($aSymlinkMapping as $oSymlinkMapping)
         {
 
-            if($oMapping->sourceMissing() && $oMapping->createIfNotExists())
+            if($oSymlinkMapping->sourceMissing() && $oSymlinkMapping->createIfNotExists())
             {
                 $this->console->log('Source item missing, now creating <info>' . $oMapping->getSourcePath() . '</info>', 'Novum domain installer');
                 $oMapping->createSource();
             }
-            $sAbsoluteDestinationParentDir = dirname($oMapping->getDestPath());
+            $sAbsoluteDestinationParentDir = dirname($oSymlinkMapping->getDestPath());
             if(!is_dir($sAbsoluteDestinationParentDir))
             {
                 $this->console->log("Creating destination parent directory <info>{$sAbsoluteDestinationParentDir}</info>",  'Novum domain installer');
                 mkdir($sAbsoluteDestinationParentDir, 0777, true);
             }
 
-            if(file_exists($oMapping->getDestPath() || is_link($oMapping->getDestPath())))
+            if(file_exists($oSymlinkMapping->getDestPath() || is_link($oSymlinkMapping->getDestPath())))
             {
                 $this->console->log("Unlinking current destination <info>{$oMapping->getDestPath()}</info>",  'Novum domain installer');
                 unlink($oMapping->getDestPath());
