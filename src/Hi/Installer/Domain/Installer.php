@@ -58,7 +58,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
         $this->makePublicDomainDir($sSystemId, $package);
 
         // symlinking all the files in the final system
-        $this->createSymlinkMapping($sSystemId, $sNamespace);
+        Util::createSymlinkMapping($sSystemId, $sNamespace);
 
 
         $this->linkInMigrateSh($sSystemId);
