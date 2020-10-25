@@ -16,12 +16,20 @@ class Util
         StructureCreator::create($oDirectoryStructure, $io);
     }
 
-    static function relativeSymlinkPath(string $sDirectory)
+    /**
+     * Adjusts relative symlink source paths need to be adjusted based on their destination.
+     *
+     * @param string $sSource
+     * @param string $sDestination
+     * @return string
+     */
+    static function createRelativeSymlinkPath(string $sSource, string $sDestination):string
     {
-        $aLevels = explode(DIRECTORY_SEPARATOR, $sDirectory);
+        $aLevels = explode(DIRECTORY_SEPARATOR, $sDestination);
         $sRelativePath = str_repeat('../', count($aLevels));
-        $sRelativeDirectory = $sDirectory . $sRelativePath;
-        echo "Relative directory $sRelativeDirectory " . PHP_EOL;
+        $sRelativeSource = $sDirectory . $sSource;
+
+        echo "Creating relative symlink $sRelativeSource $sRelativeDirectory " . PHP_EOL;
         return $sRelativeDirectory;
     }
 

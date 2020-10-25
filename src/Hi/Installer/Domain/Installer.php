@@ -97,7 +97,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
             }
 
             $this->console->log("Creating symlink  <info>{$oMapping->getSourcePath()}</info> --> <info>{$oMapping->getDestPath()}</info>",  'Novum domain installer');
-            symlink($oMapping->getSourcePath(), $oMapping->getDestPath());
+            symlink($oMapping->getSourcePath(), Util::createRelativeSymlinkPath($oMapping->getDestPath()));
         }
     }
     private function linkInMigrateSh(string $sSystemId){
@@ -137,7 +137,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
             unlink($sDomainDir);
         }
         // ./domain/novum.svb
-        symlink($sRelativeSource, $sDomainDir);
+        symlink($sRelativeSource, Util::createRelativeSymlinkPath($sDomainDir));
     }
 
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
