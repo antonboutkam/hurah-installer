@@ -115,6 +115,13 @@ class Installer extends AbstractInstaller implements InstallerInterface
             $oConsole->log("Public domain directory <info>$sDomainsRoot</info> exists");
         }
         $sDomainDir = $sDomainsRoot . '/' . $sSystemId;
+        $sRelativeSource = $this->getRelativeInstallPath($package);
+
+        if(is_link($sRelativeSource))
+        {
+            $oConsole->log("Domain was installed, unlinking, then re-linking <info>$sDomainsRoot</info>");
+            unlink($sRelativeSource);
+        }
         // ./domain/novum.svb
         symlink($this->getRelativeInstallPath($package), $sDomainDir);
     }
