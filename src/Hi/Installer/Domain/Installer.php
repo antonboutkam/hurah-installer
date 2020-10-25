@@ -39,7 +39,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
         $oConsole->log("Generated namespace $sSystemId -> $sNamespace", 'Novum domain installer');
 
         /**
-         * Create required directories
+         * Create required root / base directories
          */
         $oConsole->log("Setting up base file structure", 'Novum domain installer');
         $oDirectoryStructure = new DirectoryStructure();
@@ -53,6 +53,8 @@ class Installer extends AbstractInstaller implements InstallerInterface
          *
          * 1. To the domain directory as seen from the root.
          * 2. Into the system directory to create the actual structure that the webserver loads.
+         *
+         * Important: all paths have to be relative, this is needed to make them work in both Docker and outside.
          */
         $aMapping = $oDirectoryStructure->getDomainSystemSymlinkMapping($sSystemId, $sNamespace);
 
@@ -85,7 +87,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
     }
     private function linkInMigrateSh(string $sSystemId){
         $oDirectoryStructure = new DirectoryStructure();
-        $sDestMigrationScript = "{$oDirectoryStructure->getSystemDir(true)}/build/database/{$sSystemId}/migrate.sh";
+        $sDestMigrationScript = "{$oDirectoryStructure->getSystemDir(false)}/build/database/{$sSystemId}/migrate.sh";
         $oConsole->log("Adding migrate.sh script to $sDestMigrationScript",  'Novum domain installer');
         if(realpath($sDestMigrationScript))
         {
@@ -99,7 +101,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
     private function makePublicDomainDir(string $sSystemId, PackageInterface $package)
     {
         $oDirectoryStructure = new DirectoryStructure();
-        $sDomainsRoot = $oDirectoryStructure->getDomainDir(true);
+        $sDomainsRoot = $oDirectoryStructure->getDomainDir(false);
 
         if(!is_dir($sDomainsRoot))
         {

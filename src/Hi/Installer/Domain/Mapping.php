@@ -57,7 +57,7 @@ class Mapping
     {
         if($bAbsolute)
         {
-            return $this->oDirectoryStructure->getDomainDir(true) . DIRECTORY_SEPARATOR . $this->sSystemId . DIRECTORY_SEPARATOR . $this->sRelativeSource;
+            return $this->oDirectoryStructure->getDomainDir(false) . DIRECTORY_SEPARATOR . $this->sSystemId . DIRECTORY_SEPARATOR . $this->sRelativeSource;
         }
         return  $this->sRelativeSource;
     }
@@ -65,7 +65,7 @@ class Mapping
     {
         if($bAbsolute)
         {
-            return $this->oDirectoryStructure->getSystemDir(true) . DIRECTORY_SEPARATOR . $this->sRelativeDest;
+            return $this->oDirectoryStructure->getSystemDir(false) . DIRECTORY_SEPARATOR . $this->sRelativeDest;
         }
         return  $this->sRelativeDest;
     }
