@@ -117,13 +117,13 @@ class Installer extends AbstractInstaller implements InstallerInterface
         $sDomainDir = $sDomainsRoot . '/' . $sSystemId;
         $sRelativeSource = $this->getRelativeInstallPath($package);
 
-        if(is_link($sRelativeSource))
+        if(is_link($sDomainDir))
         {
-            $oConsole->log("Domain was installed, unlinking, then re-linking <info>$sDomainsRoot</info>");
-            unlink($sRelativeSource);
+            $oConsole->log("Domain was installed, unlinking, then re-linking <info>$sDomainDir</info>");
+            unlink($sDomainDir);
         }
         // ./domain/novum.svb
-        symlink($this->getRelativeInstallPath($package), $sDomainDir);
+        symlink($sRelativeSource, $sDomainDir);
     }
 
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
