@@ -4,7 +4,7 @@ namespace Hi\Installer\Domain;
 
 use Hi\Helpers\DirectoryStructure;
 
-class Mapping
+class SymlinkMapping
 {
     const DIRECTORY = 'directory';
     const FILE = 'file';

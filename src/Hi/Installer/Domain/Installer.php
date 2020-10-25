@@ -46,7 +46,8 @@ class Installer extends AbstractInstaller implements InstallerInterface
         StructureCreator::create($oDirectoryStructure, $this->io);
 
         $oConsole->log('Creating public domain view');
-        $this->makePublicDomainDir($sSystemId, $package);
+        // mkdit .domain/novum.svb
+        $this->makePublicDomainDir($oConsole, $sSystemId, $package);
 
         /**
          * For every file there will be two mappings.
@@ -56,7 +57,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
          *
          * Important: all paths have to be relative, this is needed to make them work in both Docker and outside.
          */
-        $aMapping = $oDirectoryStructure->getDomainSystemSymlinkMapping($sSystemId, $sNamespace);
+        $aSymlinkMapping = $oDirectoryStructure->getDomainSystemSymlinkMapping($sSystemId, $sNamespace);
 
         foreach ($aMapping as $oMapping)
         {
@@ -98,17 +99,24 @@ class Installer extends AbstractInstaller implements InstallerInterface
         symlink( "{$oDirectoryStructure->getSystemDir(true)}/build/_skel/migrate.sh", $sDestMigrationScript);
     }
 
-    private function makePublicDomainDir(string $sSystemId, PackageInterface $package)
+    private function makePublicDomainDir(Console $oConsole, string $sSystemId, PackageInterface $package)
     {
         $oDirectoryStructure = new DirectoryStructure();
         $sDomainsRoot = $oDirectoryStructure->getDomainDir(false);
 
+        // ./domain
         if(!is_dir($sDomainsRoot))
         {
+            $oConsole->log("Creating public domain directory <info>$sDomainsRoot</info>");
             mkdir($sDomainsRoot, 0777, true);
         }
+        else
+        {
+            $oConsole->log("Public domain directory <info>$sDomainsRoot</info> exists");
+        }
         $sDomainDir = $sDomainsRoot . '/' . $sSystemId;
-        symlink($this->getInstallPath($package), $sDomainDir);
+        // ./domain/novum.svb
+        symlink($this->getRelativeInstallPath($package), $sDomainDir);
     }
 
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
