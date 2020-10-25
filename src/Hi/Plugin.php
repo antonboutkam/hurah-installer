@@ -13,8 +13,9 @@ use Hi\Installer\Api\Installer as ApiInstaller;
 use Hi\Installer\Domain\Installer as DomainInstaller;
 use Hi\Installer\Core\Installer as CoreInstaller;
 use Hi\Installer\Env\Installer as EnvInstaller;
+use Composer\Plugin\Capable;
 
-class Plugin implements PluginInterface, EventSubscriberInterface
+class Plugin implements PluginInterface, EventSubscriberInterface, Capable
 {
     public function activate(Composer $composer, IOInterface $io)
     {
@@ -58,6 +59,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         // $event->getComposer()
 
         $this->postInstall($event);
+    }
+    public function getCapabilities()
+    {
+        return array(
+            'Composer\Plugin\Capability\CommandProvider' => CommandProvider::class,
+        );
     }
     public static function getSubscribedEvents()
     {

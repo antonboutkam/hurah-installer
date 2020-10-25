@@ -1,19 +1,37 @@
 <?php
 namespace Hi\Installer\Domain;
 
+use Composer\Composer;
+use Composer\Installer\BinaryInstaller;
+use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Installer\InstallerInterface;
 use Composer\Repository\InstalledRepositoryInterface;
+use Composer\Util\Filesystem;
 use Hi\Helpers\ConsoleColor;
 use Hi\Helpers\StructureCreator;
 use Hi\Installer\AbstractInstaller;
 use Hi\Helpers\Console;
 use Hi\Helpers\DirectoryStructure;
-use Hi\Installer\Util;
+use Hi\Installer\Domain\Util;
 use phpDocumentor\Reflection\Utils;
 
 class Installer extends AbstractInstaller implements InstallerInterface
 {
+
+    /**
+     * @var Console
+     */
+    private $console;
+
+    function __construct(IOInterface $io, Composer $composer, $type = 'library', Filesystem $filesystem = null, BinaryInstaller $binaryInstaller = null)
+    {
+        parent::__construct($io, $composer, $type, $filesystem, $binaryInstaller);
+        $this->console = new Console($io);
+
+    }
+
+
     /**
      * @param InstalledRepositoryInterface $repo
      * @param PackageInterface $package
@@ -23,32 +41,30 @@ class Installer extends AbstractInstaller implements InstallerInterface
         /**
          * Installing all files on the normal location inside vendor
          */
-        $oConsole = new Console($this->io);
         parent::install($repo, $package);
 
         $sSystemId = $package->getExtra()['system_id'];
-        $oConsole->log("System id: $sSystemId", 'Novum domain installer');
+        $this->console->log("System id: $sSystemId", 'Novum domain installer');
 
-        /**
-         * Generating a namespace
-         */
-        list($sOrg, $sDomain) = explode('.', str_replace('domain-', '', $sSystemId));
-        $sDomainNsPart = preg_replace("/[^A-Za-z0-9 ]/", '_', $sDomain);
-        $sNamespace = ucfirst($sOrg).ucfirst($sDomainNsPart);
 
-        $oConsole->log("Generated namespace $sSystemId -> $sNamespace", 'Novum domain installer');
+        $sNamespace = Util::namespaceFromSystemId($sSystemId);
+        $this->console->log("Generated namespace $sSystemId -> $sNamespace", 'Novum domain installer');
 
-        /**
-         * Create required root / base directories
-         */
-        $oConsole->log("Setting up base file structure", 'Novum domain installer');
-        $oDirectoryStructure = new DirectoryStructure();
-        StructureCreator::create($oDirectoryStructure, $this->io);
+        Util::createBaseDirectoryStructure($this->io);
 
-        $oConsole->log('Creating public domain view');
+
         // mkdit .domain/novum.svb
-        $this->makePublicDomainDir($oConsole, $sSystemId, $package);
+        $this->console->log('Creating public domain view');
+        $this->makePublicDomainDir($sSystemId, $package);
 
+        // symlinking all the files in the final system
+        $this->createSymlinkMapping($sSystemId, $sNamespace);
+
+
+        $this->linkInMigrateSh($sSystemId);
+    }
+    private function createSymlinkMapping(string $sSystemId, string $sNamespace)
+    {
         /**
          * For every file there will be two mappings.
          *
@@ -64,42 +80,40 @@ class Installer extends AbstractInstaller implements InstallerInterface
 
             if($oMapping->sourceMissing() && $oMapping->createIfNotExists())
             {
-                $oConsole->log('Source item missing, now creating <info>' . $oMapping->getSourcePath() . '</info>', 'Novum domain installer');
+                $this->console->log('Source item missing, now creating <info>' . $oMapping->getSourcePath() . '</info>', 'Novum domain installer');
                 $oMapping->createSource();
             }
             $sAbsoluteDestinationParentDir = dirname($oMapping->getDestPath());
             if(!is_dir($sAbsoluteDestinationParentDir))
             {
-                $oConsole->log("Creating destination parent directory <info>{$sAbsoluteDestinationParentDir}</info>",  'Novum domain installer');
+                $this->console->log("Creating destination parent directory <info>{$sAbsoluteDestinationParentDir}</info>",  'Novum domain installer');
                 mkdir($sAbsoluteDestinationParentDir, 0777, true);
             }
 
             if(file_exists($oMapping->getDestPath() || is_link($oMapping->getDestPath())))
             {
-                $oConsole->log("Unlinking current destination <info>{$oMapping->getDestPath()}</info>",  'Novum domain installer');
+                $this->console->log("Unlinking current destination <info>{$oMapping->getDestPath()}</info>",  'Novum domain installer');
                 unlink($oMapping->getDestPath());
             }
 
-            $oConsole->log("Creating symlink  <info>{$oMapping->getSourcePath()}</info> --> <info>{$oMapping->getDestPath()}</info>",  'Novum domain installer');
+            $this->console->log("Creating symlink  <info>{$oMapping->getSourcePath()}</info> --> <info>{$oMapping->getDestPath()}</info>",  'Novum domain installer');
             symlink($oMapping->getSourcePath(), $oMapping->getDestPath());
         }
-
-        $this->linkInMigrateSh($sSystemId);
     }
     private function linkInMigrateSh(string $sSystemId){
         $oDirectoryStructure = new DirectoryStructure();
         $sDestMigrationScript = "{$oDirectoryStructure->getSystemDir(false)}/build/database/{$sSystemId}/migrate.sh";
-        $oConsole->log("Adding migrate.sh script to $sDestMigrationScript",  'Novum domain installer');
+        $this->console->log("Adding migrate.sh script to $sDestMigrationScript",  'Novum domain installer');
         if(realpath($sDestMigrationScript))
         {
             unlink($sDestMigrationScript);
         }
 
-        $oConsole->log("Symlinking ---> ../../build/_skel/migrate.sh ----> $sDestMigrationScript");
+        $this->console->log("Symlinking ---> ../../build/_skel/migrate.sh ----> $sDestMigrationScript");
         symlink( "{$oDirectoryStructure->getSystemDir(true)}/build/_skel/migrate.sh", $sDestMigrationScript);
     }
 
-    private function makePublicDomainDir(Console $oConsole, string $sSystemId, PackageInterface $package)
+    private function makePublicDomainDir(string $sSystemId, PackageInterface $package)
     {
         $oDirectoryStructure = new DirectoryStructure();
         $sDomainsRoot = $oDirectoryStructure->getDomainDir(false);
@@ -107,19 +121,19 @@ class Installer extends AbstractInstaller implements InstallerInterface
         // ./domain
         if(!is_dir($sDomainsRoot))
         {
-            $oConsole->log("Creating public domain directory <info>$sDomainsRoot</info>");
+            $this->console->log("Creating public domain directory <info>$sDomainsRoot</info>");
             mkdir($sDomainsRoot, 0777, true);
         }
         else
         {
-            $oConsole->log("Public domain directory <info>$sDomainsRoot</info> exists");
+            $this->console->log("Public domain directory <info>$sDomainsRoot</info> exists");
         }
         $sDomainDir = $sDomainsRoot . '/' . $sSystemId;
         $sRelativeSource = $this->getRelativeInstallPath($package);
 
         if(is_link($sDomainDir))
         {
-            $oConsole->log("Domain was installed, unlinking, then re-linking <info>$sDomainDir</info>");
+            $this->console->log("Domain was installed, unlinking, then re-linking <info>$sDomainDir</info>");
             unlink($sDomainDir);
         }
         // ./domain/novum.svb
