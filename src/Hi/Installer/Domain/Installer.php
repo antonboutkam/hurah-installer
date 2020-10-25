@@ -102,7 +102,11 @@ class Installer extends AbstractInstaller implements InstallerInterface
             unlink($sDomainDir);
         }
         // ./domain/novum.svb
-        symlink($sRelativeSource, Util::createRelativeSymlinkPath($sDomainDir));
+        $this->console->log("Creating relative sy, unlinking, then re-linking <info>$sDomainDir</info>");
+
+        $sRelativeDestination = Util::createRelativeSymlinkPath($sRelativeSource, $sDomainDir);
+        $this->console->log("Creating symlink from: <info>$sRelativeSource</info> to: <info>$sRelativeDestination</info>");
+        symlink($sRelativeSource, $sRelativeDestination);
     }
 
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
