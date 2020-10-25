@@ -107,6 +107,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
         $sRelativeDestination = Util::createRelativeSymlinkPath($sRelativeSource, $sDomainDir);
         $this->console->log("Creating symlink from: <info>$sRelativeSource</info> to: <info>$sRelativeDestination</info>");
         symlink($sRelativeSource, $sRelativeDestination);
+
     }
 
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
