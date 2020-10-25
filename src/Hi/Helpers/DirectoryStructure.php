@@ -5,6 +5,7 @@ namespace Hi\Helpers;
 use Composer\Command\ProhibitsCommand;
 use Core\Environment;
 use Hi\Installer\Domain\Mapping;
+use Hi\Installer\Domain\SymlinkMapping;
 
 class DirectoryStructure
 {
@@ -117,19 +118,19 @@ class DirectoryStructure
     /**
      * @param string $sSystemId
      * @param string $sCustomNamespace
-     * @return Mapping[]
+     * @return SymlinkMapping[]
      */
     public function getDomainSystemSymlinkMapping(string $sSystemId, string $sCustomNamespace):array
     {
         return [
-            new Mapping($sSystemId, 'admin_modules', 'admin_modules/Custom/' . $sCustomNamespace, Mapping::DIRECTORY),
-            new Mapping($sSystemId, 'classes/Crud', 'classes/Crud/Custom/' . $sCustomNamespace, Mapping::DIRECTORY),
-            new Mapping($sSystemId, 'classes/Model', 'classes/Model/Custom/' . $sCustomNamespace, Mapping::DIRECTORY),
-            new Mapping($sSystemId, 'style', 'admin_public_html/Custom/' . $sSystemId, Mapping::DIRECTORY),
-            new Mapping($sSystemId, 'schema.xml', 'build/database/' . $sSystemId . '/schema.xml', Mapping::FILE),
-            new Mapping($sSystemId, 'api.xml', 'build/database/' . $sSystemId . '/api.xml', Mapping::FILE),
-            new Mapping($sSystemId, 'database/init', 'build/database/' . $sSystemId . '/crud_queries', Mapping::DIRECTORY),
-            new Mapping($sSystemId, 'config.php', 'config/' . $sSystemId . '/config.php', Mapping::FILE)
+            new SymlinkMapping($sSystemId, 'admin_modules', 'admin_modules/Custom/' . $sCustomNamespace, SymlinkMapping::DIRECTORY),
+            new SymlinkMapping($sSystemId, 'classes/Crud', 'classes/Crud/Custom/' . $sCustomNamespace, SymlinkMapping::DIRECTORY),
+            new SymlinkMapping($sSystemId, 'classes/Model', 'classes/Model/Custom/' . $sCustomNamespace, SymlinkMapping::DIRECTORY),
+            new SymlinkMapping($sSystemId, 'style', 'admin_public_html/Custom/' . $sSystemId, SymlinkMapping::DIRECTORY),
+            new SymlinkMapping($sSystemId, 'schema.xml', 'build/database/' . $sSystemId . '/schema.xml', SymlinkMapping::FILE),
+            new SymlinkMapping($sSystemId, 'api.xml', 'build/database/' . $sSystemId . '/api.xml', SymlinkMapping::FILE),
+            new SymlinkMapping($sSystemId, 'database/init', 'build/database/' . $sSystemId . '/crud_queries', SymlinkMapping::DIRECTORY),
+            new SymlinkMapping($sSystemId, 'config.php', 'config/' . $sSystemId . '/config.php', SymlinkMapping::FILE)
         ];
     }
 
