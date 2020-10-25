@@ -28,7 +28,7 @@ class Mapping
 
     function sourceMissing():bool
     {
-        return file_exists($this->getSourcePath());
+        return !file_exists($this->getSourcePath()) && !is_link($this->getSourcePath());
     }
     function createSource()
     {
