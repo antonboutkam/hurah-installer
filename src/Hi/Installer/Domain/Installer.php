@@ -63,43 +63,8 @@ class Installer extends AbstractInstaller implements InstallerInterface
 
         $this->linkInMigrateSh($sSystemId);
     }
-    private function createSymlinkMapping(string $sSystemId, string $sNamespace)
-    {
-        /**
-         * For every file there will be two mappings.
-         *
-         * 1. To the domain directory as seen from the root.
-         * 2. Into the system directory to create the actual structure that the webserver loads.
-         *
-         * Important: all paths have to be relative, this is needed to make them work in both Docker and outside.
-         */
-        $aSymlinkMapping = $oDirectoryStructure->getDomainSystemSymlinkMapping($sSystemId, $sNamespace);
 
-        foreach ($aSymlinkMapping as $oSymlinkMapping)
-        {
 
-            if($oSymlinkMapping->sourceMissing() && $oSymlinkMapping->createIfNotExists())
-            {
-                $this->console->log('Source item missing, now creating <info>' . $oMapping->getSourcePath() . '</info>', 'Novum domain installer');
-                $oMapping->createSource();
-            }
-            $sAbsoluteDestinationParentDir = dirname($oSymlinkMapping->getDestPath());
-            if(!is_dir($sAbsoluteDestinationParentDir))
-            {
-                $this->console->log("Creating destination parent directory <info>{$sAbsoluteDestinationParentDir}</info>",  'Novum domain installer');
-                mkdir($sAbsoluteDestinationParentDir, 0777, true);
-            }
-
-            if(file_exists($oSymlinkMapping->getDestPath() || is_link($oSymlinkMapping->getDestPath())))
-            {
-                $this->console->log("Unlinking current destination <info>{$oMapping->getDestPath()}</info>",  'Novum domain installer');
-                unlink($oMapping->getDestPath());
-            }
-
-            $this->console->log("Creating symlink  <info>{$oMapping->getSourcePath()}</info> --> <info>{$oMapping->getDestPath()}</info>",  'Novum domain installer');
-            symlink($oMapping->getSourcePath(), Util::createRelativeSymlinkPath($oMapping->getDestPath()));
-        }
-    }
     private function linkInMigrateSh(string $sSystemId){
         $oDirectoryStructure = new DirectoryStructure();
         $sDestMigrationScript = "{$oDirectoryStructure->getSystemDir(false)}/build/database/{$sSystemId}/migrate.sh";

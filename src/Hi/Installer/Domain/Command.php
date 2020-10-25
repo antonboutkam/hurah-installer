@@ -2,6 +2,7 @@
 namespace Hi\Installer\Domain;
 
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
+use Hi\Helpers\Console;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,7 +29,9 @@ class Command extends BaseCommand
         $sSystemId = $input->getArgument('system_id');
 
         $sNamespace = Util::namespaceFromSystemId($sSystemId);
-        $this->getIO()
+
+
+        Util::createSymlinkMapping(new Console($this->getIO()), $sSystemId, $sNamespace);
 
         echo "System id: $sSystemId, namespace: $sNamespace" . PHP_EOL;
         print_r(glob('./*'));
