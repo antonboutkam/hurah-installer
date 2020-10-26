@@ -3,6 +3,10 @@ namespace Hi\Installer;
 
 final class Util
 {
+    public static function makePath(...$params):string
+    {
+        return join(DIRECTORY_SEPARATOR, $params);
+    }
 
     public static function removeSymlink($path)
     {

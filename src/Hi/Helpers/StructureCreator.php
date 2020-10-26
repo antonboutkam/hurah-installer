@@ -9,6 +9,7 @@ class StructureCreator
 
     static function create(DirectoryStructure $oDirectoryStructure, IOInterface $io):void
     {
+
         $oConsole = new Console($io);
 
         if(!is_dir($oDirectoryStructure->getDomainDir()))
