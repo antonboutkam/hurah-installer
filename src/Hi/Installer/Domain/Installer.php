@@ -103,7 +103,14 @@ class Installer extends AbstractInstaller implements InstallerInterface
         }
         // ./domain/novum.svb
         $this->console->log("Creating symlink from: <info>$sRelativeSource</info> to: <info>$sDomainDir</info>");
-        symlink($sRelativeSource, $sDomainDir);
+
+        /**
+         * The source path must be relative from the perspective of the destination. So ./domain/novum.svb should be
+         * ../domain/novum.svb as it is seen from the domain path.
+         */
+
+        $sRelativeSourceSeenFromDestination = preg_replace('/^\.\//', '../', $sRelativeSource);
+        symlink($sRelativeSourceSeenFromDestination, $sDomainDir);
 
     }
 
