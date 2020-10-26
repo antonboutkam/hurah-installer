@@ -33,35 +33,28 @@ class Util
 
         foreach ($aSymlinkMapping as $oSymlinkMapping)
         {
-            /*
+
 
             if($oSymlinkMapping->sourceMissing() && $oSymlinkMapping->createIfNotExists())
             {
                 $console->log('Source item missing, now creating <info>' . $oSymlinkMapping->getSourcePath() . '</info>', 'Novum domain installer');
                 $oSymlinkMapping->createSource();
             }
-            */
+
             $sDestinationParentDir = dirname($oSymlinkMapping->getDestPath(true));
             if(!is_dir($sDestinationParentDir))
             {
                 $console->log("Creating destination parent directory <info>{$sDestinationParentDir}</info>",  'Novum domain installer');
                 mkdir($sDestinationParentDir, 0777, true);
             }
-/*
 
             if(file_exists($oSymlinkMapping->getDestPath() || is_link($oSymlinkMapping->getDestPath())))
             {
                 $console->log("Unlinking current destination <info>{$oSymlinkMapping->getDestPath()}</info>",  'Novum domain installer');
                 unlink($oSymlinkMapping->getDestPath());
             }
-*/
-            $sSourcePath =  Util::createRelativeSymlinkPath($oSymlinkMapping->getSourcePath(), $oSymlinkMapping->getDestPath());
 
-            if(is_link($oSymlinkMapping->getDestPath()))
-            {
-                $console->log("Removing old symlink <info>{$oSymlinkMapping->getDestPath()}</info>");
-                unlink($oSymlinkMapping->getDestPath());
-            }
+            $sSourcePath =  Util::createRelativeSymlinkPath($oSymlinkMapping->getSourcePath(), $oSymlinkMapping->getDestPath());
             $console->log("Creating symlink  <info>{$sSourcePath}</info> --> <info>{$oSymlinkMapping->getDestPath()}</info>",  'Novum domain installer');
             symlink($sSourcePath, $oSymlinkMapping->getDestPath());
         }
