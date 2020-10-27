@@ -135,7 +135,7 @@ class DirectoryStructure
             new SymlinkMapping($sSystemId, 'admin_modules', 'admin_modules/Custom/' . $sCustomNamespace, SymlinkMapping::DIRECTORY),
             new SymlinkMapping($sSystemId, 'classes/Crud', 'classes/Crud/Custom/' . $sCustomNamespace, SymlinkMapping::DIRECTORY),
             new SymlinkMapping($sSystemId, 'classes/Model', 'classes/Model/Custom/' . $sCustomNamespace, SymlinkMapping::DIRECTORY),
-            new SymlinkMapping($sSystemId, 'style', 'admin_public_html/Custom/' . $sSystemId, SymlinkMapping::DIRECTORY),
+            new SymlinkMapping($sSystemId, 'style', 'admin_public_html/custom/' . $sSystemId, SymlinkMapping::DIRECTORY),
             new SymlinkMapping($sSystemId, 'schema.xml', 'build/database/' . $sSystemId . '/schema.xml', SymlinkMapping::FILE),
             new SymlinkMapping($sSystemId, 'api.xml', 'build/database/' . $sSystemId . '/api.xml', SymlinkMapping::FILE),
             new SymlinkMapping($sSystemId, 'database/init', 'build/database/' . $sSystemId . '/crud_queries', SymlinkMapping::DIRECTORY),

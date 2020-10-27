@@ -33,8 +33,6 @@ class Util
 
         foreach ($aSymlinkMapping as $oSymlinkMapping)
         {
-
-
             if($oSymlinkMapping->sourceMissing() && $oSymlinkMapping->createIfNotExists())
             {
                 $console->log('Source item missing, now creating <info>' . $oSymlinkMapping->getSourcePath() . '</info>', 'Novum domain installer');
