@@ -4,6 +4,7 @@ namespace Hi\Helpers;
 
 use Composer\Command\ProhibitsCommand;
 use Core\Environment;
+use Core\Utils;
 use Hi\Installer\Domain\Mapping;
 use Hi\Installer\Domain\SymlinkMapping;
 
@@ -34,9 +35,14 @@ class DirectoryStructure
         $this->sLogDir = $aStructure['log_dir'];
         $this->sSchemaXsdDir = $aStructure['schema_xsd_dir'];
     }
+
     function getSystemRoot():string
     {
         return $this->sSystemRoot;
+    }
+    function databaseDir():string
+    {
+        return Utils::makePath($this->getSystemDir(), 'build', 'database');
     }
     function getPublicSitePath(string $sSiteDir, int $iDirsUp = null):string
     {
@@ -61,6 +67,10 @@ class DirectoryStructure
     function getDataDir():string
     {
         return $this->sDataDir;
+    }
+    function getConfigRoot():string
+    {
+        return Utils::makePath($this->sSystemDir, 'config');
     }
     function getLogDir():string
     {
@@ -120,8 +130,7 @@ class DirectoryStructure
      * @param string $sCustomNamespace
      * @return SymlinkMapping[]
      */
-    public function getDomainSystemSymlinkMapping(string $sSystemId, string $sCustomNamespace):array
-    {
+    public function getDomainSystemSymlinkMapping(string $sSystemId, string $sCustomNamespace):array{
         return [
             new SymlinkMapping($sSystemId, 'admin_modules', 'admin_modules/Custom/' . $sCustomNamespace, SymlinkMapping::DIRECTORY),
             new SymlinkMapping($sSystemId, 'classes/Crud', 'classes/Crud/Custom/' . $sCustomNamespace, SymlinkMapping::DIRECTORY),
