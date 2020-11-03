@@ -26,7 +26,20 @@ class DirectoryStructure
         $sStructureJson = file_get_contents($sStructureFile);
         $aStructure = json_decode($sStructureJson, true);
 
-        $this->sSystemRoot = $_SERVER['SYSTEM_ROOT'];
+        if(isset($_ENV['SYSTEM_ROOT']))
+        {
+            $this->sSystemRoot = $_ENV['SYSTEM_ROOT'];
+        }
+        else if(isset($_SERVER['SYSTEM_ROOT']))
+        {
+            $this->sSystemRoot = $_SERVER['SYSTEM_ROOT'];
+        }
+        else
+        {
+            $this->sSystemRoot = null;
+        }
+
+
         $this->sEnvDir = $aStructure['env_dir'];
         $this->sSystemDir = $aStructure['system_dir'];
         $this->sDataDir = $aStructure['data_dir'];
@@ -39,6 +52,10 @@ class DirectoryStructure
     function getSystemRoot():string
     {
         return $this->sSystemRoot;
+    }
+    function getVendorDir():string
+    {
+        return Utils::makePath($this->getSystemRoot(), 'vendor');
     }
     function databaseDir():string
     {
@@ -70,7 +87,7 @@ class DirectoryStructure
     }
     function getConfigRoot():string
     {
-        return Utils::makePath($this->sSystemDir, 'config');
+        return Utils::makePath($this->sSystemRoot, 'config');
     }
     function getLogDir():string
     {
