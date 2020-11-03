@@ -17,11 +17,11 @@ use Composer\Plugin\Capable;
 
 class Plugin implements PluginInterface, EventSubscriberInterface, Capable
 {
-    public function deactivate()
+    public function deactivate(Composer\Composer $composer, Composer\IO\IOInterface $io)
     {
 
     }
-    public function uninstall()
+    public function uninstall(Composer\Composer $composer, Composer\IO\IOInterface $io)
     {
 
     }
