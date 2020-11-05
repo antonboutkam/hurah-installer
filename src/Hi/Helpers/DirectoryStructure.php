@@ -3,6 +3,7 @@
 namespace Hi\Helpers;
 
 use Composer\Command\ProhibitsCommand;
+use Core\DataType\PluginType;
 use Core\Environment;
 use Core\Utils;
 use Hi\Installer\Domain\Mapping;
@@ -19,8 +20,7 @@ class DirectoryStructure
     private $sLogDir;
     private $sSchemaXsdDir;
 
-    public function __construct()
-    {
+    public function __construct(){
         $sPackageDir = dirname(__DIR__, 3);
         $sStructureFile =  "$sPackageDir/directory-structure.json";
         $sStructureJson = file_get_contents($sStructureFile);
@@ -39,7 +39,6 @@ class DirectoryStructure
             $this->sSystemRoot = null;
         }
 
-
         $this->sEnvDir = $aStructure['env_dir'];
         $this->sSystemDir = $aStructure['system_dir'];
         $this->sDataDir = $aStructure['data_dir'];
@@ -49,6 +48,12 @@ class DirectoryStructure
         $this->sSchemaXsdDir = $aStructure['schema_xsd_dir'];
     }
 
+    function getPluginRespositoryDir(PluginType $type)
+    {
+        $sRepositoryDir = Utils::makePath($this->getDataDir(true), 'repository' ,$type);
+        Utils::makeDir($sRepositoryDir);
+        return $sRepositoryDir;
+    }
     function getSystemRoot():string
     {
         return $this->sSystemRoot;
@@ -81,8 +86,12 @@ class DirectoryStructure
     {
         return $this->sPublicDir;
     }
-    function getDataDir():string
+    function getDataDir(bool $bAbsolute = false):string
     {
+        if($bAbsolute)
+        {
+            return $this->getSystemRoot() . DIRECTORY_SEPARATOR . $this->sDataDir;
+        }
         return $this->sDataDir;
     }
     function getConfigRoot():string
