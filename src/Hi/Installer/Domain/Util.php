@@ -46,7 +46,7 @@ class Util
                 mkdir($sDestinationParentDir, 0777, true);
             }
 
-            if(file_exists($oSymlinkMapping->getDestPath() || is_link($oSymlinkMapping->getDestPath())))
+            if(file_exists($oSymlinkMapping->getDestPath()) || is_link($oSymlinkMapping->getDestPath()))
             {
                 $console->log("Unlinking current destination <info>{$oSymlinkMapping->getDestPath()}</info>",  'Novum domain installer');
                 unlink($oSymlinkMapping->getDestPath());
