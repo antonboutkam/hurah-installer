@@ -94,9 +94,9 @@ class DirectoryStructure
         }
         return $this->sDataDir;
     }
-    function getConfigRoot():string
+    function getConfigRoot(bool $bAbsolute = false):string
     {
-        return Utils::makePath($this->sSystemRoot, 'config');
+        return Utils::makePath($this->getSystemDir($bAbsolute), 'config');
     }
     function getLogDir():string
     {
