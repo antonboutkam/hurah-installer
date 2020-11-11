@@ -48,9 +48,9 @@ class DirectoryStructure
         $this->sSchemaXsdDir = $aStructure['schema_xsd_dir'];
     }
 
-    function getPluginRespositoryDir(PluginType $type)
+    function getPluginRespositoryDir(PluginType $type, bool $bAbsolute = true)
     {
-        $sRepositoryDir = Utils::makePath($this->getDataDir(true), 'repository' ,$type);
+        $sRepositoryDir = Utils::makePath($this->getDataDir($bAbsolute), 'repository' ,$type);
         Utils::makeDir($sRepositoryDir);
         return $sRepositoryDir;
     }
