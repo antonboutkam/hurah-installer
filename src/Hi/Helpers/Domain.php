@@ -2,6 +2,8 @@
 
 namespace Hi\Helpers;
 
+use Core\DataType\Path;
+use Core\Utils;
 use DirectoryIterator;
 
 
@@ -16,9 +18,23 @@ final class Domain
         $this->sPathname = $oDirectory->getPathname();
         $this->sSystemId = $oDirectory->getFilename();
     }
-
-    function getPathname():string
+    function getConfigPath(bool $bAbsolute = false):Path
     {
+        $oDirectoryStructure = new DirectoryStructure();
+        return new Path(Utils::makePath($oDirectoryStructure->getSystemDir(true), 'config', $this->getSystemID(), 'config.php'));
+    }
+    function getPropelConfigPath(bool $bAbsolute = false):Path
+    {
+        $oDirectoryStructure = new DirectoryStructure();
+        return new Path(Utils::makePath($oDirectoryStructure->getSystemDir(true), 'config', $this->getSystemID(), 'propel', 'config.php'));
+    }
+    function getPathname(bool $bAbsolute = false):string
+    {
+        if($bAbsolute)
+        {
+            $oDirectoryStructure = new DirectoryStructure();
+            return Utils::makePath($oDirectoryStructure->getSystemDir(true), $this->sPathname);
+        }
         return $this->sPathname;
     }
     function getSystemID():string

@@ -82,8 +82,12 @@ class DirectoryStructure
     {
         return $this->sSchemaXsdDir;
     }
-    function getPublicDir():string
+    function getPublicDir(bool $bAbsolute = false):string
     {
+        if($bAbsolute)
+        {
+            return Utils::makePath($this->getSystemRoot(), $this->sPublicDir);
+        }
         return $this->sPublicDir;
     }
     function getDataDir(bool $bAbsolute = false):string
@@ -102,6 +106,7 @@ class DirectoryStructure
     {
         return $this->sLogDir;
     }
+
     function getDomainDir(bool $bAbsolute = false):string
     {
         if($bAbsolute)
