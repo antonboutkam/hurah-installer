@@ -34,23 +34,23 @@ class Plugin implements PluginInterface, EventSubscriberInterface, Capable
             $oConsole->log("Activating Novum installer", "Novum component loaders", ConsoleColor::blue);
             $oInstallationManager = $composer->getInstallationManager();
 
-            $oConsole->log("Installing sites", "Novum component loaders", ConsoleColor::blue);
+            $oConsole->log("Site installer", "Novum component loaders", ConsoleColor::blue);
             $oSiteInstaller = new SiteInstaller($io, $composer);
             $oInstallationManager->addInstaller($oSiteInstaller);
 
-            $oConsole->log("Installing api's", "Novum component loaders", ConsoleColor::blue);
+            $oConsole->log("Api installer", "Novum component loaders", ConsoleColor::blue);
             $oApiInstaller = new ApiInstaller($io, $composer);
             $oInstallationManager->addInstaller($oApiInstaller);
 
-            $oConsole->log("Installing domains", "Novum component loaders", ConsoleColor::blue);
+            $oConsole->log("Domain installer", "Novum component loaders", ConsoleColor::blue);
             $oDomainInstaller = new DomainInstaller($io, $composer);
             $oInstallationManager->addInstaller($oDomainInstaller);
 
-            $oConsole->log("Installing core system", "Novum component loaders", ConsoleColor::blue);
+            $oConsole->log("Core installer", "Novum component loaders", ConsoleColor::blue);
             $oCoreInstaller = new CoreInstaller($io, $composer);
             $oInstallationManager->addInstaller($oCoreInstaller);
 
-            $oConsole->log("Installing databases", "Novum component loaders", ConsoleColor::blue);
+            $oConsole->log("Database installer", "Novum component loaders", ConsoleColor::blue);
             $oDomainInstaller = new DatabaseInstaller($io, $composer);
             $oInstallationManager->addInstaller($oDomainInstaller);
         }
