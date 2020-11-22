@@ -49,10 +49,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface, Capable
             $oConsole->log("Core installer", "Novum component loaders", ConsoleColor::blue);
             $oCoreInstaller = new CoreInstaller($io, $composer);
             $oInstallationManager->addInstaller($oCoreInstaller);
-
+            /*
             $oConsole->log("Database installer", "Novum component loaders", ConsoleColor::blue);
             $oDomainInstaller = new DatabaseInstaller($io, $composer);
             $oInstallationManager->addInstaller($oDomainInstaller);
+            */
         }
         catch(\Exception $e)
         {
