@@ -11,6 +11,7 @@ use Hi\Helpers\ConsoleColor;
 use Hi\Installer\Site\Installer as SiteInstaller;
 use Hi\Installer\Api\Installer as ApiInstaller;
 use Hi\Installer\Domain\Installer as DomainInstaller;
+use Hi\Installer\Database\Installer as DatabaseInstaller;
 use Hi\Installer\Core\Installer as CoreInstaller;
 use Hi\Installer\Env\Installer as EnvInstaller;
 use Composer\Plugin\Capable;
@@ -48,6 +49,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface, Capable
             $oConsole->log("Installing core system", "Novum component loaders", ConsoleColor::blue);
             $oCoreInstaller = new CoreInstaller($io, $composer);
             $oInstallationManager->addInstaller($oCoreInstaller);
+
+            $oConsole->log("Installing databases", "Novum component loaders", ConsoleColor::blue);
+            $oDomainInstaller = new DatabaseInstaller($io, $composer);
+            $oInstallationManager->addInstaller($oDomainInstaller);
         }
         catch(\Exception $e)
         {

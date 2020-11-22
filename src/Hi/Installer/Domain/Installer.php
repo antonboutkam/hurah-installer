@@ -52,7 +52,6 @@ class Installer extends AbstractInstaller implements InstallerInterface
 
         Util::createBaseDirectoryStructure($this->io);
 
-
         // mkdit .domain/novum.svb
         $this->console->log('Creating public domain view');
         $this->makePublicDomainDir($sSystemId, $package);
@@ -60,8 +59,9 @@ class Installer extends AbstractInstaller implements InstallerInterface
         // symlinking all the files in the final system
         Util::createSymlinkMapping($this->console, $sSystemId, $sNamespace);
 
-
         $this->linkInMigrateSh($sSystemId);
+
+
     }
 
 
