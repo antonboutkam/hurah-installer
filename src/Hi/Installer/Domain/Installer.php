@@ -59,7 +59,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
         // symlinking all the files in the final system
         Util::createSymlinkMapping($this->console, $sSystemId, $sNamespace);
 
-        $this->linkInMigrateSh($sSystemId);
+        // $this->linkInMigrateSh($sSystemId);
 
 
     }
