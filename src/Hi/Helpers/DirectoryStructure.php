@@ -3,6 +3,7 @@
 namespace Hi\Helpers;
 
 use Composer\Command\ProhibitsCommand;
+use Core\DataType\Path;
 use Core\DataType\PluginType;
 use Core\Environment;
 use Core\Utils;
@@ -58,7 +59,12 @@ class DirectoryStructure
     {
         return $this->sSystemRoot;
     }
-    function getVendorDir():string
+
+    /**
+     * Returns the absolute path to the vendor directory
+     * @return string
+     */
+    function getVendorDir():Path
     {
         return Utils::makePath($this->getSystemRoot(), 'vendor');
     }

@@ -59,24 +59,8 @@ class Installer extends AbstractInstaller implements InstallerInterface
         // symlinking all the files in the final system
         Util::createSymlinkMapping($this->console, $sSystemId, $sNamespace);
 
-        // $this->linkInMigrateSh($sSystemId);
-
-
     }
 
-
-    private function linkInMigrateSh(string $sSystemId){
-        $oDirectoryStructure = new DirectoryStructure();
-        $sDestMigrationScript = "{$oDirectoryStructure->getSystemDir(false)}/build/database/{$sSystemId}/migrate.sh";
-        $this->console->log("Adding migrate.sh script to $sDestMigrationScript",  'Novum domain installer');
-        if(realpath($sDestMigrationScript))
-        {
-            unlink($sDestMigrationScript);
-        }
-
-        $this->console->log("Symlinking ---> ../../build/_skel/migrate.sh ----> $sDestMigrationScript");
-        symlink( "{$oDirectoryStructure->getSystemDir(true)}/build/_skel/migrate.sh", $sDestMigrationScript);
-    }
 
     private function makePublicDomainDir(string $sSystemId, PackageInterface $package)
     {
