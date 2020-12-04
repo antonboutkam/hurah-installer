@@ -37,7 +37,7 @@ class DirectoryStructure
         }
         else
         {
-            $this->sSystemRoot = null;
+            $this->sSystemRoot = '/app';
         }
 
         $this->sEnvDir = $aStructure['env_dir'];
