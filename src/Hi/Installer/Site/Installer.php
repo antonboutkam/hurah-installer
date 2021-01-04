@@ -87,7 +87,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
 
         $oConsole->log('Removing sourcefiles of ' . $package->getName(), $this->unInstallerName);
 
-        parent::uninstall($repo, $package);
+        // parent::uninstall($repo, $package);
     }
 
     public function supports($packageType)
