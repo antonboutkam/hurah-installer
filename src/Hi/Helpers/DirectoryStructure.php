@@ -97,7 +97,7 @@ class DirectoryStructure
         if ($bAbsolute) {
             return Path::make($this->getSystemRoot(), $this->sPublicDir);
         }
-        return $this->sPublicDir;
+        return new Path($this->sPublicDir);
     }
 
     function getSystemSitePath(string $sSiteDir): string
