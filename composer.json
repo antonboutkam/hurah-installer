@@ -27,7 +27,7 @@
 	"extra": {
 		"class": "Hi\\Plugin"
 	},
-	"require-dev": {
-		"phpunit/phpunit": "^9.3@dev"
+	"require-dev" : {
+		"phpunit/phpunit": "^9.3.8"
 	}
 }
