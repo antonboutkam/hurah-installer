@@ -2,15 +2,14 @@
 namespace Hi;
 
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Composer\Command\BaseCommand;
+use Hi\Installer\Domain\Command;
+
 
 class CommandProvider implements CommandProviderCapability
 {
     public function getCommands()
     {
-        return array(new \Hi\Installer\Domain\Command());
+        return array(new Command());
     }
 }
 

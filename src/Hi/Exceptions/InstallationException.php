@@ -1,7 +1,9 @@
 <?php
 namespace Hi\Exceptions;
 
-class InstallationException extends \Exception
+use Exception;
+
+class InstallationException extends Exception
 {
 
 }

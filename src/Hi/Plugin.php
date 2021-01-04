@@ -1,6 +1,7 @@
 <?php
 namespace Hi;
 
+use Exception;
 use Hi\Helpers\Console;
 use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;
@@ -11,18 +12,17 @@ use Hi\Helpers\ConsoleColor;
 use Hi\Installer\Site\Installer as SiteInstaller;
 use Hi\Installer\Api\Installer as ApiInstaller;
 use Hi\Installer\Domain\Installer as DomainInstaller;
-use Hi\Installer\Database\Installer as DatabaseInstaller;
 use Hi\Installer\Core\Installer as CoreInstaller;
 use Hi\Installer\Env\Installer as EnvInstaller;
 use Composer\Plugin\Capable;
 
 class Plugin implements PluginInterface, EventSubscriberInterface, Capable
 {
-    public function deactivate(Composer\Composer $composer, Composer\IO\IOInterface $io)
+    public function deactivate(Composer $composer, IOInterface $io)
     {
 
     }
-    public function uninstall(Composer\Composer $composer, Composer\IO\IOInterface $io)
+    public function uninstall(Composer $composer, IOInterface $io)
     {
 
     }
@@ -50,7 +50,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface, Capable
             $oCoreInstaller = new CoreInstaller($io, $composer);
             $oInstallationManager->addInstaller($oCoreInstaller);
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
             echo $e->getMessage() . PHP_EOL;
             echo $e->getTraceAsString() . PHP_EOL;
