@@ -9,6 +9,7 @@ use Hi\Helpers\Console;
 use Hi\Helpers\DirectoryStructure;
 use Hi\Helpers\StructureCreator;
 use Hi\Installer\Util;
+use React\Promise\PromiseInterface;
 
 class Installer extends AbstractInstaller implements InstallerInterface
 {
@@ -28,49 +29,60 @@ class Installer extends AbstractInstaller implements InstallerInterface
          */
         StructureCreator::create($oDirectoryStructure, $this->io);
 
+
+        $postDownload = function () use ($package, $oDirectoryStructure, $sSiteDir, $oConsole) {
+            /**
+             * Symlinking into public folder
+             */
+            $iDirsUp = 1;
+
+            $sRelativeInstallPath = $this->getRelativeInstallPath($package, $iDirsUp);
+
+
+            $oConsole->log('Symlinking ' . $sRelativeInstallPath . ' => ' . $oDirectoryStructure->getPublicSitePath($sSiteDir), $this->installerName);
+
+            if(file_exists($oDirectoryStructure->getPublicSitePath($sSiteDir)))
+            {
+                $oConsole->log('Unlinking ' . $oDirectoryStructure->getPublicSitePath($sSiteDir), $this->installerName);
+                unlink($oDirectoryStructure->getPublicSitePath($sSiteDir));
+            }
+
+            symlink($sRelativeInstallPath, $oDirectoryStructure->getPublicSitePath($sSiteDir));
+
+
+            /**
+             * Symlinking into system folder
+             */
+
+            $sAbsoluteInstallPath = parent::getInstallPath($package);
+            $sPackageDir = basename($sAbsoluteInstallPath); //bv api-belastingdiest
+            $sRelativeVirtualInstallPath = "../../$sPackageDir";
+            $oConsole->log("Symlinking $sRelativeVirtualInstallPath" . ' => ' . $oDirectoryStructure->getSystemSitePath($sSiteDir), $this->installerName);
+
+            if(is_link($oDirectoryStructure->getSystemSitePath($sSiteDir)))
+            {
+                unlink($oDirectoryStructure->getSystemSitePath($sSiteDir));
+            }
+
+            symlink($sRelativeVirtualInstallPath, $oDirectoryStructure->getSystemSitePath($sSiteDir));
+
+
+            $oConsole->log('Site installation completed', $this->installerName);
+        };
+
+
+
         /**
          * Downloading and installing the required files into the vendor folder
          */
-        parent::install($repo, $package);
+        $promise = parent::install($repo, $package);
 
-        /**
-         * Symlinking into public folder
-         */
-        $iDirsUp = 1;
-
-        $sRelativeInstallPath = $this->getRelativeInstallPath($package, $iDirsUp);
-
-
-        $oConsole->log('Symlinking ' . $sRelativeInstallPath . ' => ' . $oDirectoryStructure->getPublicSitePath($sSiteDir), $this->installerName);
-
-        if(file_exists($oDirectoryStructure->getPublicSitePath($sSiteDir)))
-        {
-            $oConsole->log('Unlinking ' . $oDirectoryStructure->getPublicSitePath($sSiteDir), $this->installerName);
-            unlink($oDirectoryStructure->getPublicSitePath($sSiteDir));
+        // Composer v2 might return a promise here
+        if ($promise instanceof PromiseInterface) {
+            return $promise->then($postDownload);
         }
 
-        symlink($sRelativeInstallPath, $oDirectoryStructure->getPublicSitePath($sSiteDir));
-
-
-        /**
-         * Symlinking into system folder
-         */
-        $iDirsUp = 2;
-
-        $sAbsoluteInstallPath = parent::getInstallPath($package);
-        $sPackageDir = basename($sAbsoluteInstallPath); //bv api-belastingdiest
-        $sRelativeVirtualInstallPath = "../../$sPackageDir";
-        $oConsole->log("Symlinking $sRelativeVirtualInstallPath" . ' => ' . $oDirectoryStructure->getSystemSitePath($sSiteDir), $this->installerName);
-
-        if(is_link($oDirectoryStructure->getSystemSitePath($sSiteDir)))
-        {
-            unlink($oDirectoryStructure->getSystemSitePath($sSiteDir));
-        }
-
-        symlink($sRelativeVirtualInstallPath, $oDirectoryStructure->getSystemSitePath($sSiteDir));
-
-
-        $oConsole->log('Site installation completed', $this->installerName);
+        return $postDownload();
 
     }
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
@@ -87,7 +99,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
 
         $oConsole->log('Removing sourcefiles of ' . $package->getName(), $this->unInstallerName);
 
-        parent::uninstall($repo, $package);
+        // parent::uninstall($repo, $package);
     }
 
     public function supports($packageType)

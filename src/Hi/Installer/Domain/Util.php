@@ -70,9 +70,7 @@ class Util
     {
         $aLevels = explode(DIRECTORY_SEPARATOR, $sDestination);
         $sRelativePath = str_repeat('../', count($aLevels) +1);
-        $sRelativeSource = $sRelativePath . $sSource;
-
-        return $sRelativeSource;
+        return $sRelativePath . $sSource;
     }
 
     static function namespaceFromSystemId(string $sSystemId):string
@@ -83,8 +81,7 @@ class Util
          */
         list($sOrg, $sDomain) = explode('.', $sSystemId);
         $sDomainNsPart = preg_replace("/[^A-Za-z0-9 ]/", '_', $sDomain);
-        $sNamespace = ucfirst($sOrg).ucfirst($sDomainNsPart);
-        return $sNamespace;
+        return ucfirst($sOrg).ucfirst($sDomainNsPart);
     }
 
 }

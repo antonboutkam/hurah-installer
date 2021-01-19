@@ -2,13 +2,10 @@
 
 namespace Hi\Helpers;
 
-use Composer\Command\ProhibitsCommand;
-use Core\DataType\Path;
-use Core\DataType\PluginType;
-use Core\Environment;
-use Core\Utils;
-use Hi\Installer\Domain\Mapping;
+use DirectoryIterator;
 use Hi\Installer\Domain\SymlinkMapping;
+use Hurah\Types\Type\Path;
+use Hurah\Types\Type\PluginType;
 
 class DirectoryStructure
 {
@@ -21,22 +18,18 @@ class DirectoryStructure
     private $sLogDir;
     private $sSchemaXsdDir;
 
-    public function __construct(){
+    public function __construct()
+    {
         $sPackageDir = dirname(__DIR__, 3);
-        $sStructureFile =  "$sPackageDir/directory-structure.json";
+        $sStructureFile = "$sPackageDir/directory-structure.json";
         $sStructureJson = file_get_contents($sStructureFile);
         $aStructure = json_decode($sStructureJson, true);
 
-        if(isset($_ENV['SYSTEM_ROOT']))
-        {
+        if (isset($_ENV['SYSTEM_ROOT'])) {
             $this->sSystemRoot = $_ENV['SYSTEM_ROOT'];
-        }
-        else if(isset($_SERVER['SYSTEM_ROOT']))
-        {
+        } else if (isset($_SERVER['SYSTEM_ROOT'])) {
             $this->sSystemRoot = $_SERVER['SYSTEM_ROOT'];
-        }
-        else
-        {
+        } else {
             $this->sSystemRoot = '/app';
         }
 
@@ -49,88 +42,85 @@ class DirectoryStructure
         $this->sSchemaXsdDir = $aStructure['schema_xsd_dir'];
     }
 
-    function getPluginRespositoryDir(PluginType $type, bool $bAbsolute = true)
+    function getPluginRespositoryDir(PluginType $type, bool $bAbsolute = true): Path
     {
-        $sRepositoryDir = Utils::makePath($this->getDataDir($bAbsolute), 'repository' ,$type);
-        Utils::makeDir($sRepositoryDir);
-        return $sRepositoryDir;
+        $oRepositoryDir = Path::make($this->getDataDir($bAbsolute), 'repository', $type);
+        $oRepositoryDir->makeDir();
+        return $oRepositoryDir;
     }
-    function getSystemRoot():string
+
+    function getDataDir(bool $bAbsolute = false): string
+    {
+        if ($bAbsolute) {
+            return $this->getSystemRoot() . DIRECTORY_SEPARATOR . $this->sDataDir;
+        }
+        return $this->sDataDir;
+    }
+
+    function getSystemRoot(): string
     {
         return $this->sSystemRoot;
     }
 
     /**
      * Returns the absolute path to the vendor directory
-     * @return string
+     * @return Path
      */
-    function getVendorDir():Path
+    function getVendorDir(): Path
     {
-        return Utils::makePath($this->getSystemRoot(), 'vendor');
-    }
-    function databaseDir():string
-    {
-        return Utils::makePath($this->getSystemDir(), 'build', 'database');
-    }
-    function getPublicSitePath(string $sSiteDir, int $iDirsUp = null):string
-    {
-        if(!$iDirsUp)
-        {
-            $iDirsUp = 0;
-        }
-        return str_repeat('../', $iDirsUp) . $this->getPublicDir() . '/' . $sSiteDir;
-    }
-    function getSystemSitePath(string $sSiteDir):string
-    {
-        return $this->getSystemDir() . '/public_html/' . $sSiteDir;
-    }
-    function getSchemaXsdDir():string
-    {
-        return $this->sSchemaXsdDir;
-    }
-    function getPublicDir(bool $bAbsolute = false):string
-    {
-        if($bAbsolute)
-        {
-            return Utils::makePath($this->getSystemRoot(), $this->sPublicDir);
-        }
-        return $this->sPublicDir;
-    }
-    function getDataDir(bool $bAbsolute = false):string
-    {
-        if($bAbsolute)
-        {
-            return $this->getSystemRoot() . DIRECTORY_SEPARATOR . $this->sDataDir;
-        }
-        return $this->sDataDir;
-    }
-    function getConfigRoot(bool $bAbsolute = false):string
-    {
-        return Utils::makePath($this->getSystemDir($bAbsolute), 'config');
-    }
-    function getLogDir():string
-    {
-        return $this->sLogDir;
+        return Path::make($this->getSystemRoot(), 'vendor');
     }
 
-    function getDomainDir(bool $bAbsolute = false):string
+    function databaseDir(): Path
     {
-        if($bAbsolute)
-        {
-            return $this->getSystemRoot() . DIRECTORY_SEPARATOR . $this->sDomainDir;
-        }
-        return $this->sDomainDir;
+        return Path::make($this->getSystemDir(), 'build', 'database');
     }
 
-    function getSystemDir(bool $bAbsolute = false):string
+    function getSystemDir(bool $bAbsolute = false): string
     {
-        if($bAbsolute)
-        {
+        if ($bAbsolute) {
             return $this->getSystemRoot() . DIRECTORY_SEPARATOR . $this->sSystemDir;
         }
         return $this->sSystemDir;
     }
-    function getEnvDir():string
+
+    function getPublicSitePath(string $sSiteDir, int $iDirsUp = null): string
+    {
+        if (!$iDirsUp) {
+            $iDirsUp = 0;
+        }
+        return str_repeat('../', $iDirsUp) . $this->getPublicDir() . '/' . $sSiteDir;
+    }
+
+    function getPublicDir(bool $bAbsolute = false): Path
+    {
+        if ($bAbsolute) {
+            return Path::make($this->getSystemRoot(), $this->sPublicDir);
+        }
+        return new Path($this->sPublicDir);
+    }
+
+    function getSystemSitePath(string $sSiteDir): string
+    {
+        return $this->getSystemDir() . '/public_html/' . $sSiteDir;
+    }
+
+    function getSchemaXsdDir(): string
+    {
+        return $this->sSchemaXsdDir;
+    }
+
+    function getConfigRoot(bool $bAbsolute = false): Path
+    {
+        return Path::make($this->getSystemDir($bAbsolute), 'config');
+    }
+
+    function getLogDir(): string
+    {
+        return $this->sLogDir;
+    }
+
+    function getEnvDir(): string
     {
         return $this->sEnvDir;
     }
@@ -138,22 +128,18 @@ class DirectoryStructure
     /**
      * @return Domain[]
      */
-    function getDomainCollection():array
+    function getDomainCollection(): array
     {
-        if(!file_exists($this->getDomainDir()))
-        {
+        if (!file_exists($this->getDomainDir())) {
             return [];
         }
-        $oDomainIterator = new \DirectoryIterator($this->getDomainDir());
+        $oDomainIterator = new DirectoryIterator($this->getDomainDir());
         $aOut = [];
-        foreach ($oDomainIterator as $oDomainItem)
-        {
-            if(!$oDomainItem->isDir())
-            {
+        foreach ($oDomainIterator as $oDomainItem) {
+            if (!$oDomainItem->isDir()) {
                 continue;
             }
-            if($oDomainItem->isDot())
-            {
+            if ($oDomainItem->isDot()) {
                 continue;
             }
             $aOut[] = new Domain($oDomainItem);
@@ -162,12 +148,21 @@ class DirectoryStructure
         return $aOut;
     }
 
+    function getDomainDir(bool $bAbsolute = false): string
+    {
+        if ($bAbsolute) {
+            return $this->getSystemRoot() . DIRECTORY_SEPARATOR . $this->sDomainDir;
+        }
+        return $this->sDomainDir;
+    }
+
     /**
      * @param string $sSystemId
      * @param string $sCustomNamespace
      * @return SymlinkMapping[]
      */
-    public function getDomainSystemSymlinkMapping(string $sSystemId, string $sCustomNamespace):array{
+    public function getDomainSystemSymlinkMapping(string $sSystemId, string $sCustomNamespace): array
+    {
         return [
             new SymlinkMapping($sSystemId, 'admin_modules', 'admin_modules/Custom/' . $sCustomNamespace, SymlinkMapping::DIRECTORY),
             new SymlinkMapping($sSystemId, 'classes/Crud', 'classes/Crud/Custom/' . $sCustomNamespace, SymlinkMapping::DIRECTORY),
@@ -184,6 +179,7 @@ class DirectoryStructure
     {
         return $this->sSystemDir . '/admin_modules/Custom/' . $sCustomNamespace;
     }
+
     public function getSystemCustomCrudPath($sCustomNamespace)
     {
         return $this->sSystemDir . '/classes/Crud/Custom/' . $sCustomNamespace;
